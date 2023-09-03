@@ -7,7 +7,7 @@ const opts: RouteShorthandOptions = {
             200: {
                 type: 'object',
                 properties: {
-                    pong: {
+                    test: {
                         type: 'string'
                     }
                 }
@@ -17,8 +17,8 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-const handleFunc: RouteHandlerMethod = (request: FastifyRequest, reply: FastifyReply) => {
-    return {pong: 'it worked!'}
+const handleFunc:RouteHandlerMethod = (request:FastifyRequest, reply:FastifyReply)=> {
+    return {test: 'it worked!'}
 }
 
 export default function () {

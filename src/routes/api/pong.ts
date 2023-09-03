@@ -17,7 +17,7 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-const handleFunc: RouteHandlerMethod = (request: FastifyRequest, reply: FastifyReply) => {
+const  handleFunc:RouteHandlerMethod = (request:FastifyRequest, reply:FastifyReply)=> {
     return {pong: 'it worked!'}
 }
 
