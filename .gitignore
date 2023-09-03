@@ -1,0 +1,6 @@
+# 打包的目录
+dist
+
+# 模块
+node_modules
+
