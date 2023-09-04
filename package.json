@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
+    "clu": "ts-node-dev src/patch_node.ts",
     "build": "tsc --project tsconfig.json",
     "start": "node dist/index.js"
   },

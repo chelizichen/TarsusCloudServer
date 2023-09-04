@@ -3,10 +3,9 @@ import path from "path";
 const routes_path = path.resolve(__dirname, "routes")
 process.env.routes_path = routes_path;
 process.env.IsProd = '0';
-import server from "./main_control/server";
 // 集群模块
-import Fastify, {FastifyInstance} from "fastify";
-import loadAll from "./main_control/server";
+import Fastify, { FastifyInstance } from "fastify";
+import load_all from "./main_control/server";
 
 /**
  * @description
@@ -14,11 +13,8 @@ import loadAll from "./main_control/server";
  */
 
 const startServer = async () => {
-    const server = Fastify({logger: true});
-    server.get('/some-dynamic-route', async (request, reply) => {
-        return { hello: 'world' };
-    });
-    await server.register(loadAll)
+    const server = Fastify({ logger: true });
+    await server.register(load_all)
     await server.listen({
         port: 3000
     });

@@ -18,7 +18,7 @@ const opts: RouteShorthandOptions = {
 }
 
 const handleFunc: RouteHandlerMethod = (request: FastifyRequest, reply: FastifyReply) => {
-    return {pong: 'it worked!'}
+    return {pong: 'it worked!33'}
 }
 
 export default function () {

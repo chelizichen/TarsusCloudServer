@@ -26,7 +26,8 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
             await load_routes(server,filePath, `${prefix}/${file}`);
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
             try{
-                const route = await import("../routes/api/pong");
+                const file_path = path.resolve(dir,file)
+                const route = await import(file_path);
                 const [opts, handler]:any[]=  route.default();
                 const routePath = `${prefix}/${path.basename(file, suffix)}`;
                 console.log(routePath + ' is load success')
