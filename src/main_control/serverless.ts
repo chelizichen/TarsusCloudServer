@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import path from "path";
 import {FastifyInstance, RouteShorthandOptions} from "fastify";
-import {RouteHandlerMethod} from "fastify/types/route";
 
 // 环境定义
 console.log('process.env.IsProd',process.env.IsProd)
@@ -16,12 +15,9 @@ if(process.env.IsProd == "1"){
 
 async function load_routes(server:FastifyInstance,dir, prefix = '') {
     const files = fs.readdirSync(dir);
-    console.log(666)
-    debugger
     for (const file of files) {
         const filePath = path.join(dir, file);
         const stat = fs.statSync(filePath);
-
         if (stat.isDirectory()) {
             await load_routes(server,filePath, `${prefix}/${file}`);
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
