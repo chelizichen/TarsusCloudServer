@@ -1,0 +1,84 @@
+<html>
+<header>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/prettify.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .lay {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+    </style>
+    <script>
+        function join(...args) {
+            return args
+                .filter(arg => typeof arg === 'string' && arg.length > 0)
+                .join('/')
+                .replace(/\/+/g, '/');
+        }
+
+        function toRel(rel_path, type) {
+            console.log(rel_path)
+            const s = join('/tarsfity/', rel_path)
+            // let s = join(location.pathname, rel_path);
+            if (type == "folder") {
+                window.location.href = "/admin/" + '?fass=' + rel_path
+                // fetch(s).then(res => res.json()).then(res => {
+                //     const dirs = document.getElementById("dirs")
+                //     const upload = document.getElementById("upload")
+                //     dirs.innerHTML = res.dirs
+                //     upload.innerHTML = res.form
+                //     console.log(res)
+                // })
+            } else {
+                fetch(s).then(res => res.json()).then(res => {
+                    const content = document.getElementById("file-content")
+                    content.innerText = res.content
+                })
+            }
+        }
+
+        window.onload = function () {
+            const urlSearchParams = new URLSearchParams(location.search);
+            const fass = urlSearchParams.get("fass");
+            const req_url = join("/tarsfity/", fass);
+
+            fetch(req_url).then(res => res.json()).then(res => {
+                const parser = new DOMParser();
+                const dirs = document.getElementById("dirs")
+                const upload = document.getElementById("upload")
+                const dir_ele = parser.parseFromString(res.dirs, 'text/html')
+                const upload_ele = parser.parseFromString(res.form, 'text/html')
+                dirs.appendChild(dir_ele.body.firstChild)
+                upload.appendChild(upload_ele.body.firstChild)
+                console.log(res)
+            })
+        }
+
+    </script>
+
+</header>
+
+<body>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-4">
+            <div id="dirs"></div>
+        </div>
+        <div class="col-4">
+                 <pre class="prettyprint lang-typescript" style="padding: 10px;">
+                        <code id="file-content">
+                        </code>
+                  </pre>
+        </div>
+        <div class="col-4">
+            <div id="upload">
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
