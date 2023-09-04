@@ -5,9 +5,9 @@ import load_routes from "./serverless";
 
 async function loadAll(server){
     server.register(fastifyMultipart);
+    patch_func(server);
     const config = JSON.parse(process.env.fastify_config)
     if(config.isPrimary){
-        patch_func(server);
         load_static(server);
     }else{
         await load_routes(server,process.env.routes_path)

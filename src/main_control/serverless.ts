@@ -19,7 +19,24 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
         const filePath = path.join(dir, file);
         const stat = fs.statSync(filePath);
         if (stat.isDirectory()) {
+            // 如果为目录，则为该目录提供一个接口，可以通过该目录去上传文件
+            // TODO：后期提供用户私域的功能
             await load_routes(server,filePath, `${prefix}/${file}`);
+            const routes = process.env.routes_path
+            server.route({
+                method:"POST",
+                url:dir,
+                handler:async function(request,reply){
+                    const data = await request.file();
+                    const fileContent = await data.toBuffer();
+                    const originalFilename = data.filename;
+                    const file_path = path.resolve(routes,originalFilename)
+            
+                    fs.writeFileSync(file_path,fileContent)
+            
+                    return { uploaded: true };
+                }
+            })
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
             try{
                 const file_path = path.resolve(dir,file)
