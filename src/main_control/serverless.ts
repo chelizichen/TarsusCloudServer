@@ -23,18 +23,20 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
             // TODO：后期提供用户私域的功能
             await load_routes(server,filePath, `${prefix}/${file}`);
             const routes = process.env.routes_path
+            const upload_path =  `${prefix}/${file}/$upload`;
+            console.log('upload_path',upload_path)
             server.route({
                 method:"POST",
-                url:dir,
+                url:upload_path,
                 handler:async function(request,reply){
+                    // @ts-ignore
                     const data = await request.file();
                     const fileContent = await data.toBuffer();
                     const originalFilename = data.filename;
-                    const file_path = path.resolve(routes,originalFilename)
-            
+                    const file_path = path.join(routes,upload_path,originalFilename).replace("/$upload","")
+                    console.log(file_path)
                     fs.writeFileSync(file_path,fileContent)
-            
-                    return { uploaded: true };
+                    return { uploaded: true,write_file_path:file_path };
                 }
             })
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
@@ -45,7 +47,7 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
                 const routePath = `${prefix}/${path.basename(file, suffix)}`;
                 console.log(routePath + ' is load success')
                 server.route({
-                    method: 'GET',
+                    method: 'POST',
                     url: routePath,
                     ...opts,
                     handler
