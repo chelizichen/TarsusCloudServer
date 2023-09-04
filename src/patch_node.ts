@@ -57,7 +57,7 @@ async function reset_node(port:number){
     const config = node_configs.find(item=>item.port == port)
     
     const server = Fastify({ logger: config.config.logger });
-    await server.register(loadAll)
+    await server.register((server)=>loadAll(server,config.config),{ })
     server.listen({
         port: config.port
     });
@@ -92,7 +92,6 @@ async function startServer() {
         
         cluster.on('exit', (worker, code, signal) => {
             console.log(code);
-            
             if(code == nodeStats.exit){
                 console.log(`Worker ${worker.process.pid} will restart exit.code = 30`);
             }else{
