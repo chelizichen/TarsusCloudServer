@@ -1,6 +1,6 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
 import path from "path";
-import {Reply, ReplyBody} from "../../main_control/define";
+import {centerControl, Reply, ReplyBody} from "../../main_control/define";
 import {node_configs} from "../../main_control/reset";
 import cluster from "cluster";
 
@@ -16,18 +16,18 @@ const opts: RouteShorthandOptions = {
                     message: {
                         type: 'string'
                     },
-                    code:{
-                        type:"number"
+                    code: {
+                        type: "number"
                     },
-                    data:{
-                        type:"object"
+                    data: {
+                        type: "object"
                     }
                 }
             }
         },
         body: {
-            userId:{
-                type:"string"
+            userId: {
+                type: "string"
             }
         }
     }
@@ -38,15 +38,20 @@ type CustomRequest = FastifyRequest<{
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {userId} = request.body
-    const userDir = userId
-    let env = node_configs.find(item=>item.port == Number(userId))
-    console.log('env',env)
-    await cluster.fork({
-        fastify_config:JSON.stringify(env)
-    })
+    // 通过用户ID查PID
+    const pid: string = await centerControl.getPidByUserId(userId)
+    console.log("开始比较PID")
+    console.log(pid)
     // const userRoutePath = path.resolve(process.env.routes_path,userDir)
-
-    return Reply(ReplyBody.success,ReplyBody.success_message,null)
+    for (const id in cluster.workers) {
+        console.log("WorkerPID")
+        console.log(cluster.workers[id].process.pid)
+        if (Number(pid) == Number(cluster.workers[id].process.pid)) {
+            cluster.workers[id].send("shutdown");
+            console.log("已发送关闭请求")
+        }
+    }
+    return Reply(ReplyBody.success, ReplyBody.success_message, null)
 }
 
 export default function () {

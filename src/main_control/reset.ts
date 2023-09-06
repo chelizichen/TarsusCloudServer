@@ -6,7 +6,8 @@ export enum nodeStats{
     alive,
     died,
     starting = 30,
-    exit = 40
+    exit = 40,
+    showdown = 41
 }
 
 
@@ -27,7 +28,8 @@ export const node_configs:node_config[] = [
         config:{
             isPrimary:false,
             stats:nodeStats.died,
-            userPath:"api"
+            user_dirs:"api",
+            user_id:"1"
         }
     },
     {
@@ -35,7 +37,8 @@ export const node_configs:node_config[] = [
         config:{
             isPrimary:false,
             stats:nodeStats.died,
-            userPath:"api1"
+            user_dirs:"api1",
+            user_id:"2"
         }
     }
 ]

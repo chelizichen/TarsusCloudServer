@@ -6,7 +6,7 @@ process.env.routes_path = routes_path;
 process.env.IsProd = '1';
 import loadAll from "./main_control/server";
 import {node_configs, nodeStats, reset_node} from "./main_control/reset";
-import {node_config} from "./main_control/define";
+import {centerControl, node_config} from "./main_control/define";
 
 
 async function startServer() {
@@ -53,11 +53,7 @@ async function startServer() {
             }
         })
 
-        // setTimeout(() => {
-        //     for (const id in cluster.workers) {
-        //       cluster.workers[id].send('reset');
-        //     }
-        //   }, 3000);
+
 
     }else{
         const config = process.env.fastify_config;
@@ -66,12 +62,19 @@ async function startServer() {
             return;
         }
         const worker_env = JSON.parse(config);
-        process.env.user_path =  worker_env.config.userPath
+        console.log('worker_env',worker_env)
+        await centerControl.setPid(worker_env.config.user_id,process.pid)
+        process.env.user_path =  worker_env.config.user_dirs
         try {
             await reset_node(worker_env.port);
         } catch (e) {
             console.error("Error in worker node:", e);
         }
+        process.on("message",function (message:string){
+            if(message == "shutdown"){
+                process.exit(nodeStats.showdown)
+            }
+        })
     }
 }
 
