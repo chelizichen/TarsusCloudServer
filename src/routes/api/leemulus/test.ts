@@ -1,8 +1,8 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
+import {RouteHandlerMethod} from "fastify/types/route";
 import path from "path";
-import {centerControl, node_config, Reply, ReplyBody} from "../../main_control/define";
-import cluster from "cluster";
-
+import fs from "fs";
+import {Reply, ReplyBody} from "../../../main_control/define";
 
 const routes = process.env.routes_path;
 
@@ -25,30 +25,21 @@ const opts: RouteShorthandOptions = {
             }
         },
         body: {
-            port:{
-                type:"number"
+            userId:{
+                type:"string"
             }
         }
     }
 }
+
 type CustomRequest = FastifyRequest<{
-    Body: { port: number };
+    Body: { userId: string };
 }>
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
-    const {port} = request.body
-    const env:node_config = await  centerControl.getByPort(port);
-    console.log("env",env)
-    cluster.fork({
-        fastify_config:JSON.stringify(env)
-    })
-    // const userRoutePath = path.resolve(process.env.routes_path,userDir)
-
-    return Reply(ReplyBody.success,ReplyBody.success_message,null)
+    const {userId} =  request.body
+    return Reply(ReplyBody.success,ReplyBody.success_message, {userId})
 }
 
-export default function () {
-    return [opts, handleFunc]
-}
-
+export default [opts, handleFunc]
 

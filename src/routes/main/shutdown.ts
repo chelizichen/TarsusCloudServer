@@ -1,7 +1,6 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
 import path from "path";
 import {centerControl, Reply, ReplyBody} from "../../main_control/define";
-import {node_configs} from "../../main_control/reset";
 import cluster from "cluster";
 
 

@@ -1,0 +1,3 @@
+INSERT INTO `dirs` (`id`, `user_id`, `user_name`, `port`, `dir`, `pid`, `update_time`, `create_time`, `is_primary`, `primary_id`) VALUES (1, '0', 'admin', '3401', '', 15902, '2023-09-06 21:18:39', '2023-09-06 21:18:41', '1', NULL);
+INSERT INTO `dirs` (`id`, `user_id`, `user_name`, `port`, `dir`, `pid`, `update_time`, `create_time`, `is_primary`, `primary_id`) VALUES (2, '1', '李云', '3411', 'leemulus', 17668, '2023-09-07 00:10:50', '2023-09-07 00:10:52', '0', 1);
+INSERT INTO `dirs` (`id`, `user_id`, `user_name`, `port`, `dir`, `pid`, `update_time`, `create_time`, `is_primary`, `primary_id`) VALUES (3, '2', '李成', '3412', 'chelizichen', 15902, '2023-09-07 00:10:50', '2023-09-07 00:10:52', '0', 1);

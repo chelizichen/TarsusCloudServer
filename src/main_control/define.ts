@@ -22,14 +22,13 @@ export enum PathType {
 }
 
 export type node_config = {
+    id:number,
     port: number,
-    config: {
-        isPrimary: boolean,
-        stats: nodeStats,
-        logger?: boolean,
-        user_dirs?: string,
-        user_id?:string,
-    }
+    is_primary: boolean,
+    dir: string,
+    user_id:string,
+    pid?:string,
+    primary_id:string,
 }
 
 
@@ -71,6 +70,22 @@ class CenterControl {
         console.log(data)
 
     }
+    public async getPrimary(){
+        let setPidSql = `
+            select * from dirs where is_primary = 1
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [row,fields] = await conn.query(setPidSql)
+        return row[0] || ""
+    }
+    public async getWorkers():Promise<node_config[]>{
+        let setPidSql = `
+            select * from dirs where is_primary = 0 or is_primary IS NULL
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [row,fields] = await conn.query(setPidSql)
+        return row as node_config[]
+    }
     public async getPortByUserId(userId: string) {
         let setPidSql = `
             select * from dirs where user_id = ${userId}
@@ -88,6 +103,16 @@ class CenterControl {
         const [row,fields]:any[] = await conn.query(setPidSql)
         console.log('data',row[0].pid)
         return row[0].pid || ""
+    }
+
+    public async getByPort(port: number) {
+        let portSql = `
+            select * from dirs where port = ${port}
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [row,fields]:any[] = await conn.query(portSql)
+        console.log('data',row[0].pid)
+        return row[0] || {}
     }
 }
 

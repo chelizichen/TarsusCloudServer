@@ -13,44 +13,14 @@ export enum nodeStats{
 
 
 
-export const node_configs:node_config[] = [
-    // 主控需要端口隔离
-    {
-        port:3401,
-        config:{
-            isPrimary:true,
-            stats:nodeStats.died,
-            logger:true
-        }
-    },
-    {
-        port:3411,
-        config:{
-            isPrimary:false,
-            stats:nodeStats.died,
-            user_dirs:"api",
-            user_id:"1"
-        }
-    },
-    {
-        port:3412,
-        config:{
-            isPrimary:false,
-            stats:nodeStats.died,
-            user_dirs:"api1",
-            user_id:"2"
-        }
-    }
-]
 
-export async function reset_node(port:number){
-    const config = node_configs.find(item=>item.port == port)
+export async function reset_node(config:node_config){
     if (!config) {
-        console.error("Config not found fo  r port:", port);
+        console.error("Config not found fo  r port:", config.port);
         return;
     }
     try{
-        const server = Fastify({ logger: config.config.logger });
+        const server = Fastify({ logger: config.is_primary });
         await server.register(loadAll);
         await server.listen({ port: config.port });
         console.log("监听port", config.port, "成功");
@@ -60,7 +30,7 @@ export async function reset_node(port:number){
             if(msg == "reset"){
                 const sendToPrimary = {
                     stats:nodeStats.starting,
-                    port:port
+                    port:config.port
                 }
                 // 强制重启
                 process.send(sendToPrimary,function(){
@@ -70,6 +40,6 @@ export async function reset_node(port:number){
             }
         })
     }catch(e){
-        console.error("Error in reset_node for port:", port, e);
+        console.error("Error in reset_node for port:", config.port, e);
     }
 }

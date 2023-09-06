@@ -4,17 +4,14 @@ import path from "path";
 const routes_path = path.resolve(__dirname, "routes")
 process.env.routes_path = routes_path;
 process.env.IsProd = '1';
-import loadAll from "./main_control/server";
-import {node_configs, nodeStats, reset_node} from "./main_control/reset";
+import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
 
 
 async function startServer() {
-    const primary_node:node_config = node_configs.find(item=>item.config.isPrimary == true)
-    const worker_nodes:node_config[] = node_configs.filter(item=>!item.config.isPrimary)
+    const primary_node:node_config = await centerControl.getPrimary();
+    const worker_nodes:node_config[] = await centerControl.getWorkers();
     if(cluster.isPrimary){
-
-        
         cluster.on('exit', (worker, code, signal) => {
             console.log(code);
             if(code == nodeStats.exit){
@@ -28,7 +25,7 @@ async function startServer() {
 
         try {
             // 单独启动主控端口后再启动其他端口
-            await reset_node(primary_node.port);
+            await reset_node(primary_node);
 
             // for (let i = 0; i < worker_nodes.length; i++) {
             //     const fork_env:string = JSON.stringify(worker_nodes[i])
@@ -46,9 +43,9 @@ async function startServer() {
             if(port && stats){
                 console.log('primary node on message',message);
                 if(stats == nodeStats.starting && port){
-                    const node_config = node_configs.find(item=>item.port == port)
+                    const node_config:node_config = worker_nodes.find(item=>item.port == port)
                     console.log("restart server at port:",node_config.port);
-                    reset_node(node_config.port)
+                    reset_node(node_config)
                 }
             }
         })
@@ -61,12 +58,12 @@ async function startServer() {
             console.error("fastify_config not found in environment variables");
             return;
         }
-        const worker_env = JSON.parse(config);
-        console.log('worker_env',worker_env)
-        await centerControl.setPid(worker_env.config.user_id,process.pid)
-        process.env.user_path =  worker_env.config.user_dirs
+        const worker_env:node_config = JSON.parse(config);
+        await centerControl.setPid(worker_env.user_id,process.pid)
+        process.env.user_path =  worker_env.dir
+        console.log( process.env.user_path)
         try {
-            await reset_node(worker_env.port);
+            await reset_node(worker_env);
         } catch (e) {
             console.error("Error in worker node:", e);
         }
