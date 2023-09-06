@@ -22,17 +22,36 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
             await load_routes(server,filePath, `${prefix}/${file}`);
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
             try{
-                const file_path = path.resolve(dir,file)
-                const route = await import(file_path);
-                const [opts, handler]:any[]=  route.default();
-                const routePath = `${prefix}/${path.basename(file, suffix)}`;
-                console.log(routePath + ' is load success')
-                server.route({
-                    method: 'POST',
-                    url: routePath,
-                    ...opts,
-                    handler
-                });
+                const isUser = process.env.fastify_config.match("3411")
+                if(!isUser){
+                    const file_path = path.resolve(dir,file)
+                    const route = await import(file_path);
+                    const [opts, handler]:any[]=  await route.default();
+                    const routePath = `${prefix}/${path.basename(file, suffix)}`;
+                    console.log(routePath + ' is load success')
+                    server.route({
+                        method: 'POST',
+                        url: routePath,
+                        ...opts,
+                        handler
+                    });
+                }else {
+                    const file_path = path.resolve(dir,file)
+                    console.log('file_path',file_path)
+                    const route = import(file_path);
+                    route.then(res=>{
+                        const [opts, handler]:any[]= res.default;
+                        const routePath = `${prefix}/${path.basename(file, suffix)}`;
+                        console.log(routePath + ' is load success')
+                        server.route({
+                            method: 'POST',
+                            url: routePath,
+                            ...opts,
+                            handler
+                        });
+                    })
+                }
+
             }catch (e){
                 console.log(e)
             }

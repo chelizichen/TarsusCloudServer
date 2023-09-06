@@ -1,5 +1,10 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
 import {RouteHandlerMethod} from "fastify/types/route";
+import path from "path";
+import fs from "fs";
+import {Reply, ReplyBody} from "../../main_control/define";
+
+const routes = process.env.routes_path;
 
 const opts: RouteShorthandOptions = {
     schema: {
@@ -7,22 +12,34 @@ const opts: RouteShorthandOptions = {
             200: {
                 type: 'object',
                 properties: {
-                    pong: {
+                    message: {
                         type: 'string'
+                    },
+                    code:{
+                        type:"number"
+                    },
+                    data:{
+                        type:"object"
                     }
                 }
             }
         },
-        querystring: {}
+        body: {
+            userId:{
+                type:"string"
+            }
+        }
     }
 }
 
-const  handleFunc:RouteHandlerMethod = (request:FastifyRequest, reply:FastifyReply)=> {
-    return {pong: '12it worked!'}
+type CustomRequest = FastifyRequest<{
+    Body: { userId: string };
+}>
+
+const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
+    const {userId} =  request.body
+    return Reply(ReplyBody.success, ReplyBody.success_message, {userId})
 }
 
-export default function () {
-    return [opts, handleFunc]
-}
-
+export default [opts, handleFunc]
 

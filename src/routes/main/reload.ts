@@ -1,7 +1,8 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
-import {RouteHandlerMethod} from "fastify/types/route";
 import path from "path";
 import {Reply, ReplyBody} from "../../main_control/define";
+import {node_configs} from "../../main_control/reset";
+import cluster from "cluster";
 
 
 const routes = process.env.routes_path;
@@ -31,12 +32,21 @@ const opts: RouteShorthandOptions = {
         }
     }
 }
+type CustomRequest = FastifyRequest<{
+    Body: { userId: string };
+}>
 
-const handleFunc: RouteHandlerMethod = async (request: FastifyRequest, reply: FastifyReply) => {
+const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
+    console.log(2)
     const {userId} = request.body
     const userDir = userId
-    const userRoutePath = path.resolve(process.env.routes_path,userDir)
-    // await load_routes(server,userRoutePath)
+    let env = node_configs.find(item=>item.port == Number(userId))
+    console.log('env',env)
+    await cluster.fork({
+        fastify_config:JSON.stringify(env)
+    })
+    // const userRoutePath = path.resolve(process.env.routes_path,userDir)
+
     return Reply(ReplyBody.success,ReplyBody.success_message,null)
 }
 

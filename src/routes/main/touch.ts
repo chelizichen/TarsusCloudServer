@@ -33,14 +33,16 @@ const opts: RouteShorthandOptions = {
 }
 
 const handleFunc: RouteHandlerMethod = async (request: FastifyRequest, reply: FastifyReply) => {
-    const {userId} = await request.body
-    const userDir = userId;
-    const data = await request.file();
-    const fileContent = await data.toBuffer();
-    const originalFilename = data.filename;
-    const file_path = path.resolve(routes,userDir, originalFilename)
-    fs.writeFileSync(file_path, fileContent)
-    return Reply(ReplyBody.success,ReplyBody.success_message,null)
+    console.log(3)
+    return {test: '11it worked!'}
+    // const {userId} = await request.body
+    // const userDir = userId;
+    // const data = await request.file();
+    // const fileContent = await data.toBuffer();
+    // const originalFilename = data.filename;
+    // const file_path = path.resolve(routes,userDir, originalFilename)
+    // fs.writeFileSync(file_path, fileContent)
+    // return Reply(ReplyBody.success,ReplyBody.success_message,null)
 }
 
 export default function () {

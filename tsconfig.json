@@ -5,6 +5,7 @@
         "esModuleInterop":true,
         "downlevelIteration":true,
         "target": "es5",
-        "lib": ["es2022", "ESNext"]
+        "lib": ["es2022", "ESNext"],
+        "strict": false
     }
 }

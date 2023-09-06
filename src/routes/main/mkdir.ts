@@ -32,15 +32,20 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-const handleFunc: RouteHandlerMethod = async (request: FastifyRequest, reply: FastifyReply) => {
-    const {userId} = await request.body
+type CustomRequest = FastifyRequest<{
+    Body: { userId: string };
+}>
+
+const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
+    console.log(1)
+    const {userId} =  request.body
     const userDir = userId;
     const dirPath = path.resolve(routes,userDir)
     fs.mkdirSync(dirPath)
     return Reply(ReplyBody.success,ReplyBody.success_message,null)
 }
 
-export default function () {
+export default async function () {
     return [opts, handleFunc]
 }
 

@@ -13,13 +13,18 @@ async function loadAll(server){
     load_static(server);
     load_main(server);
 
-    if(config.isPrimary){
+    if(config.config.isPrimary){
         const main_path = path.resolve(process.env.routes_path,PathType.main)
-        await load_routes(server,main_path)
-
+        await load_routes(server,main_path,"/main")
     }else{
-        const worker_path = path.resolve(process.env.routes_path,PathType.work)
-        await load_routes(server,worker_path)
+        const user_path = process.env.user_path
+        const worker_path = path.resolve(process.env.routes_path,user_path)
+        console.log('worker will start to resolve at ',worker_path)
+        try{
+            await load_routes(server,worker_path,"/api")
+        }catch (e){
+            console.log(e)
+        }
     }
 
 }
