@@ -1,5 +1,5 @@
 {
-  "name": "Tarsus-Serverless",
+  "name": "TarsusCloudServer",
   "version": "1.0.0",
   "scripts": {
     "dev": "ts-node-dev src/index.ts",
