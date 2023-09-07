@@ -3,7 +3,7 @@ import cluster from "cluster";
 import path from "path";
 const routes_path = path.resolve(__dirname, "routes")
 process.env.routes_path = routes_path;
-process.env.IsProd = '1';
+process.env.IsProd = '0';
 import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
 
