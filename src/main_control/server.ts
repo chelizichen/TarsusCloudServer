@@ -16,6 +16,8 @@ async function loadAll(server){
     if(Number(config.is_primary)){
         const main_path = path.resolve(process.env.routes_path,PathType.main)
         await load_routes(server,main_path,"/main")
+        const worker_path = path.resolve(process.env.routes_path,PathType.work)
+        await load_routes(server,worker_path,"/api")
     }else{
         debugger;
         const user_path = process.env.user_path

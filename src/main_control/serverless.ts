@@ -22,7 +22,7 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
             await load_routes(server,filePath, `${prefix}/${file}`);
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
             try{
-                const isUser = process.env.fastify_config.match("3411")
+                const isUser = false
                 if(!isUser){
                     const file_path = path.resolve(dir,file)
                     const route = await import(file_path);
