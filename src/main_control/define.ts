@@ -22,13 +22,13 @@ export enum PathType {
 }
 
 export type node_config = {
-    id:number,
+    id: number,
     port: number,
     is_primary: boolean,
     dir: string,
-    user_id:string,
-    pid?:string,
-    primary_id:string,
+    user_id: string,
+    pid?: string,
+    primary_id: string,
 }
 
 
@@ -51,7 +51,7 @@ class PrimaryRepo {
             password: "123456",
             port: 3306,
             host: "localhost",
-            database:"serverless",
+            database: "serverless",
             connectionLimit: 10,
         }
         this._DbConnection = createPool(poolConfig);
@@ -70,20 +70,22 @@ class CenterControl {
         console.log(data)
 
     }
-    public async getPrimary(){
+
+    public async getPrimary() {
         let setPidSql = `
             select * from dirs where is_primary = 1
         `
         let conn = PrimaryRepoInst.getDB().promise()
-        const [row,fields] = await conn.query(setPidSql)
+        const [row, fields] = await conn.query(setPidSql)
         return row[0] || ""
     }
-    public async getWorkers():Promise<node_config[]>{
+
+    public async getWorkers(): Promise<node_config[]> {
         let setPidSql = `
             select * from dirs where is_primary = 0 or is_primary IS NULL
         `
         let conn = PrimaryRepoInst.getDB().promise()
-        const [row,fields] = await conn.query(setPidSql)
+        const [row, fields] = await conn.query(setPidSql)
         return row as node_config[]
     }
 
@@ -92,18 +94,27 @@ class CenterControl {
             select * from dirs where port = ${port}
         `
         let conn = PrimaryRepoInst.getDB().promise()
-        const [row,fields]:any[] = await conn.query(portSql)
-        console.log('data',row[0].pid)
+        const [row, fields]: any[] = await conn.query(portSql)
+        console.log('data', row[0].pid)
         return row[0] || {}
     }
 
-    public async getAccount(user_name,password){
+    public async getAccount(user_name, password) {
         let portSql = `
-            select * from dirs where user_name =? and password = ?
+            select * from users where user_name =? and password = ?
         `
         let conn = PrimaryRepoInst.getDB().promise()
-        const [row,fields]:any[] = await conn.query(portSql,[user_name,password])
+        const [row, fields]: any[] = await conn.query(portSql, [user_name, password])
         return row[0] || {}
+    }
+
+    public async getUserDirs(userId: string) {
+        let portSql = `
+            select * from dirs where user_id = ?
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [row, fields]: any[] = await conn.query(portSql, [userId])
+        return row || []
     }
 }
 
