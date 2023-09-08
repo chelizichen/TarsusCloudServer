@@ -86,24 +86,6 @@ class CenterControl {
         const [row,fields] = await conn.query(setPidSql)
         return row as node_config[]
     }
-    public async getPortByUserId(userId: string) {
-        let setPidSql = `
-            select * from dirs where user_id = ${userId}
-        `
-        let conn = PrimaryRepoInst.getDB().promise()
-        const [row,fields] = await conn.query(setPidSql)
-        return row[0].port || ""
-    }
-
-    public async getPidByUserId(userId: string) {
-        let setPidSql = `
-            select * from dirs where user_id = ${userId}
-        `
-        let conn = PrimaryRepoInst.getDB().promise()
-        const [row,fields]:any[] = await conn.query(setPidSql)
-        console.log('data',row[0].pid)
-        return row[0].pid || ""
-    }
 
     public async getByPort(port: number) {
         let portSql = `
@@ -112,6 +94,15 @@ class CenterControl {
         let conn = PrimaryRepoInst.getDB().promise()
         const [row,fields]:any[] = await conn.query(portSql)
         console.log('data',row[0].pid)
+        return row[0] || {}
+    }
+
+    public async getAccount(user_name,password){
+        let portSql = `
+            select * from dirs where user_name =? and password = ?
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [row,fields]:any[] = await conn.query(portSql,[user_name,password])
         return row[0] || {}
     }
 }
