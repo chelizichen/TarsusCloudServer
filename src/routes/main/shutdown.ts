@@ -1,4 +1,4 @@
-import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
+import Fastify, {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
 import path from "path";
 import {centerControl, Reply, ReplyBody} from "../../main_control/define";
 import cluster from "cluster";
@@ -25,27 +25,22 @@ const opts: RouteShorthandOptions = {
             }
         },
         body: {
-            userId: {
-                type: "string"
+            port: {
+                type: "number"
             }
         }
     }
 }
 type CustomRequest = FastifyRequest<{
-    Body: { userId: string };
+    Body: { port: number };
 }>
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
-    const {userId} = request.body
+    const {port} = request.body
     // 通过用户ID查PID
-    const pid: string = await centerControl.getPidByUserId(userId)
-    console.log("开始比较PID")
-    console.log(pid)
-    // const userRoutePath = path.resolve(process.env.routes_path,userDir)
+    const row = await centerControl.getByPort(port)
     for (const id in cluster.workers) {
-        console.log("WorkerPID")
-        console.log(cluster.workers[id].process.pid)
-        if (Number(pid) == Number(cluster.workers[id].process.pid)) {
+        if (Number(row.pid) == Number(cluster.workers[id].process.pid)) {
             cluster.workers[id].send("shutdown");
             console.log("已发送关闭请求")
         }
