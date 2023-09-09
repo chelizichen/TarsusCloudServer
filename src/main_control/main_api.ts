@@ -13,7 +13,7 @@ function load_main(server:FastifyInstance){
     server.get('/api/*', async (request: FastifyRequest, reply: FastifyReply) => {
         const request_url = request.url
         const dir = path.join(routes, request_url)
-        if (request.url.endsWith(".js") || request.url.endsWith(".ts")) {
+        if (request.url.endsWith(".js") || request.url.endsWith(".ts") || request.url.endsWith(".map")) {
             const file = fs.readFileSync(dir, "utf-8")
             reply.send(Reply(ReplyBody.success,ReplyBody.success_message,{
                 content:file
