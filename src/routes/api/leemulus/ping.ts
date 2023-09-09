@@ -9,20 +9,20 @@ const routes = process.env.routes_path;
 const opts: RouteShorthandOptions = {
     schema: {
         response: {
-            200: {
-                type: 'object',
-                properties: {
-                    message: {
-                        type: 'string'
-                    },
-                    code: {
-                        type: "number"
-                    },
-                    data: {
-                        type: "object"
-                    }
-                }
-            }
+            // 200: {
+            //     type: 'object',
+            //     properties: {
+            //         message: {
+            //             type: 'string'
+            //         },
+            //         code: {
+            //             type: "number"
+            //         },
+            //         data: {
+            //             type: "object"
+            //         }
+            //     }
+            // }
         },
         body: {
             userId: {
@@ -38,7 +38,7 @@ type CustomRequest = FastifyRequest<{
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {userId} = request.body
-
+    console.log("handleFunc: request is arrived ")
     return Reply(ReplyBody.success, ReplyBody.success_message, {userId})
 }
 export default [opts, handleFunc]

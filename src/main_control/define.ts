@@ -61,9 +61,9 @@ class PrimaryRepo {
 const PrimaryRepoInst = new PrimaryRepo()
 
 class CenterControl {
-    public async setPid(userId: string, pid: string | number) {
+    public async setPid(port: string, pid: string | number) {
         let setPidSql = `
-            update dirs set pid = ${pid} where user_id = ${userId}
+            update dirs set pid = ${pid} where port = ${port}
         `
         let conn = PrimaryRepoInst.getDB().promise()
         const data = await conn.query(setPidSql)

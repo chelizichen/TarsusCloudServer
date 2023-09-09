@@ -4,6 +4,7 @@ import load_routes from "./serverless";
 import load_main from "./main_api";
 import path from "path";
 import {node_config, PathType} from "./define";
+import load_proxy from "./proxy";
 
 
 
@@ -14,10 +15,9 @@ async function loadAll(server){
     load_main(server);
 
     if(Number(config.is_primary)){
+        await load_proxy(server)
         const main_path = path.resolve(process.env.routes_path,PathType.main)
         await load_routes(server,main_path,"/main")
-        const worker_path = path.resolve(process.env.routes_path,PathType.work)
-        await load_routes(server,worker_path,"/api")
     }else{
         debugger;
         const user_path = process.env.user_path

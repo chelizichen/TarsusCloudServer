@@ -1,24 +1,28 @@
-import {FastifyInstance} from "fastify";
-const proxy = require('fastify-http-proxy');
-import {centerControl} from "./define";
+import {FastifyReply, FastifyRequest} from "fastify";
+import http from "../static/http_request";
+import {OutTimeError} from "./error";
 
-let proxyPorts = [];
+function load_proxy(server: any) {
+    server.route({
+        method: 'POST',
+        url: '/proxy/*',
+        handler: async (request: FastifyRequest, reply: FastifyReply) => {
+            const targetUrl = request.url.replace("/proxy", "");
+            const targetPort = request.headers['x-target-port'];
+            const target = `http://localhost:${targetPort}${targetUrl}`
+            try{
+                const data = await http({
+                    url:target,
+                    method:"post",
+                    data:request.body
+                })
+                reply.send(data)
+            }catch (e){
+                throw OutTimeError()
+            }
 
-async function updateProxyPorts() {
-    proxyPorts = await centerControl.getWorkers();
-}
-
-// 定期更新工作节点端口列表
-setInterval(updateProxyPorts, 60000); // 每分钟更新一次
-function load_proxy(server:FastifyInstance){
-    server.register(proxy, {
-        upstream: 'http://localhost:3411', // 默认的上游地址，但我们会在 preHandler 中动态更改它
-        prefix: '/api',
-        http2: false,
-        preHandler: async (request, reply) => {
-            // 选择一个工作节点端口
-            const targetPort = proxyPorts[Math.floor(Math.random() * proxyPorts.length)];
-            request.upstreamAddress = `http://localhost:${targetPort}`;
         }
     });
 }
+
+export default load_proxy;

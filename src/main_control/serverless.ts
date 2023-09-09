@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import path from "path";
 import {FastifyInstance, RouteShorthandOptions} from "fastify";
+import {node_config} from "./define";
 
 // 环境定义
 console.log('process.env.IsProd',process.env.IsProd)
@@ -22,8 +23,10 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
             await load_routes(server,filePath, `${prefix}/${file}`);
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
             try{
-                const isUser = false
-                if(!isUser){
+                const config:node_config = JSON.parse(process.env.fastify_config)
+
+                const isPrimary = config.is_primary
+                if(Number(isPrimary)){
                     const file_path = path.resolve(dir,file)
                     const route = await import(file_path);
                     const [opts, handler]:any[]=  await route.default();

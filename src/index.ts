@@ -3,7 +3,7 @@ import cluster from "cluster";
 import path from "path";
 const routes_path = path.resolve(__dirname, "routes")
 process.env.routes_path = routes_path;
-process.env.IsProd = '0';
+process.env.IsProd = '1';
 import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
 
@@ -59,7 +59,7 @@ async function startServer() {
             return;
         }
         const worker_env:node_config = JSON.parse(config);
-        await centerControl.setPid(worker_env.user_id,process.pid)
+        await centerControl.setPid(String(worker_env.port),process.pid)
         process.env.user_path =  worker_env.dir
         console.log( process.env.user_path)
         try {

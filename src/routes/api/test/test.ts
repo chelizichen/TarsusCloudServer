@@ -35,8 +35,8 @@ type CustomRequest = FastifyRequest<{
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {userId} = request.body
+
     return Reply(ReplyBody.success, ReplyBody.success_message, {userId})
 }
-
 export default [opts, handleFunc]
 
