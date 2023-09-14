@@ -5,7 +5,8 @@ import {Pool, PoolOptions} from 'mysql2'
 export enum ReplyBody {
     success = 0,
     error = -1,
-    success_message = "ok"
+    success_message = "ok",
+    mkdir_err="创建目录失败"
 }
 
 export const Reply = (code: ReplyBody, message: ReplyBody, data: any) => {
@@ -115,6 +116,21 @@ class CenterControl {
         let conn = PrimaryRepoInst.getDB().promise()
         const [row, fields]: any[] = await conn.query(portSql, [userId])
         return row || []
+    }
+
+    public async saveDirs(dbObj:Record<string,any>) {
+        dbObj.is_primary = 0;
+        dbObj.update_itme = dbObj.create_time
+        const {user_id,port,dir,pid,create_time,is_primary,primary_id,update_itme} = dbObj;
+        const values = [user_id,port,dir,pid,update_itme,create_time,is_primary,primary_id]
+        let saveSql = `
+            insert into 
+            dirs(user_id,port,dir,pid,update_itme,create_time,is_primary,primary_id)
+            values(${values.map(()=>"?").toString()})
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const ret = await conn.query(saveSql,values)
+        return ret;
     }
 }
 
