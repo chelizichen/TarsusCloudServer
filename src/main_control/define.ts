@@ -100,6 +100,16 @@ class CenterControl {
         return row[0] || {}
     }
 
+    public async getByPidAndPort(pid: number,port:number) {
+        let portSql = `
+            select * from dirs where port = ${port} and pid = ${pid}
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [row, fields]: any[] = await conn.query(portSql)
+        console.log('data', row[0].pid)
+        return row[0] || {}
+    }
+
     public async getAccount(user_name, password) {
         let portSql = `
             select * from users where user_name =? and password = ?
