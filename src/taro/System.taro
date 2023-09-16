@@ -1,0 +1,26 @@
+/**
+* @description 主控结构体
+*/
+
+java_struct_package = https://github.com/chelizichen;
+java_inf_package =  https://github.com/chelizichen;
+
+struct SystemBase  {
+
+    // 记录
+    UploadCodeRes              :     {
+        1   code                :       int;    // 计划ID
+        2   message             :       string; // 创建时间
+        3   data                :       UploadCodeDataRes; // 是否打卡 0 未打卡 1 打卡
+    };
+
+    UploadCodeDataRes          :     {
+        1   uploaded            :       string;    // 计划ID
+        2   write_file_path     :       string; // 创建时间
+    };
+};
+
+
+interface PlanInf  {
+
+};

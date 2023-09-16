@@ -1,7 +1,9 @@
 import cluster from "cluster";
 import path from "path";
 const routes_path = path.resolve(__dirname, "routes")
+const taro_path = path.resolve(__dirname, "taro")
 process.env.routes_path = routes_path;
+process.env.taro_path = taro_path;
 process.env.IsProd = '0';
 import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
@@ -10,23 +12,16 @@ import { readdirSync } from "fs";
 import { cwd } from "process";
 import load_schema, { generateSchemaFromMap } from "./main_control/schema";
 
-function LoadTaro(url?: string) {
-        const taro_path = url || "src/taro";
+function LoadTaro() {
         const full_path = path.resolve(cwd(), taro_path);
-        const dirs = readdirSync(full_path);
+        const dirs      = readdirSync(full_path);
         dirs.forEach((interFace) => {
-            let taro_path = path.resolve(full_path, interFace);
-            // 将会存储到 TarsusStream 的 Map 里
+            const taro_path = path.resolve(full_path, interFace);
             stream_proxy.SetStream(taro_path);
-            console.log("taro_path - ", taro_path, ' - is load success')
         });
-        console.log("********** TARO 结构体 已全部加载完成 ************");
-        console.log("********** 即将加载 json::Schema ************");
-        const structMaps = stream_proxy.TarsusStream.struct_map
-        console.log('structMaps',structMaps);
-        const schemaMaps = generateSchemaFromMap(structMaps)
+        const structMaps    = stream_proxy.TarsusStream.struct_map
+        const schemaMaps    = generateSchemaFromMap(structMaps)
         load_schema.dtoMaps = schemaMaps;
-        console.log("********** 加载完成 json::Schema ************");
 }
 
 async function startServer() {

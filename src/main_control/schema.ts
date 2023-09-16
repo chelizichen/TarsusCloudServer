@@ -1,6 +1,9 @@
 const fastJson = require('fast-json-stringify')
 const load_schema = {
-    dtoMaps: {}
+    dtoMaps: {},
+    getResponse(res:string){
+        return load_schema.dtoMaps[res];
+    }
 }
 
 function typeMapping(type, mapData) {
