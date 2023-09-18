@@ -6,21 +6,34 @@ java_struct_package = https://github.com/chelizichen;
 java_inf_package =  https://github.com/chelizichen;
 
 struct SystemBase  {
-
-    // 记录
-    UploadCodeRes              :     {
-        1   code                :       int;    // 计划ID
-        2   message             :       string; // 创建时间
-        3   data                :       UploadCodeDataRes; // 是否打卡 0 未打卡 1 打卡
+    BaseResponse                :   {
+        1   code                :       int;    // 
+        2   message             :       string; // 
     };
 
-    UploadCodeDataRes          :     {
-        1   uploaded            :       string;    // 计划ID
-        2   write_file_path     :       string; // 创建时间
+    // 上传代码
+    UploadCodeRes              :    {
+        1   code                :       int;    // 
+        2   message             :       string; // 
+        3   data                :       UploadCodeDataRes; // 
     };
+
+    UploadCodeDataRes          :    {
+        1   uploaded            :       string;     // 
+        2   write_file_path     :       string;     // 
+        3   code_version        :       string;     // 
+    };
+
+
+    // 版本切换
+    UpdateVersionReq        : {
+        1   dir                 :       string;  // 目录
+        2   version             :       string;  // 版本
+    };
+
 };
 
 
-interface PlanInf  {
+interface SystemInf  {
 
 };
