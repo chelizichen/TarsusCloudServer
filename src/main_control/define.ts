@@ -1,12 +1,13 @@
 import {nodeStats} from "./reset";
 import {createPool} from 'mysql2'
 import {Pool, PoolOptions} from 'mysql2'
+import moment from "moment";
 
 export enum ReplyBody {
     success = 0,
     error = -1,
     success_message = "ok",
-    mkdir_err="创建目录失败"
+    mkdir_err = "创建目录失败"
 }
 
 export const Reply = (code: ReplyBody, message: ReplyBody, data: any) => {
@@ -100,7 +101,7 @@ class CenterControl {
         return row[0] || {}
     }
 
-    public async getByPidAndPort(pid: number,port:number) {
+    public async getByPidAndPort(pid: number, port: number) {
         let portSql = `
             select * from dirs where port = ${port} and pid = ${pid}
         `
@@ -128,12 +129,23 @@ class CenterControl {
         return row || []
     }
 
-    public async saveDirs(dbObj:Record<string,any>) {
+    public async saveDirs(dbObj: Record<string, any>) {
         dbObj.is_primary = 0;
         dbObj.update_time = dbObj.create_time
         dbObj.pid = 1;
-        const {user_id,port,dir,pid,create_time,is_primary,primary_id,update_time,description,release_version} = dbObj;
-        const values = [user_id,port,dir,pid,update_time,create_time,is_primary,primary_id,description,release_version]
+        const {
+            user_id,
+            port,
+            dir,
+            pid,
+            create_time,
+            is_primary,
+            primary_id,
+            update_time,
+            description,
+            release_version
+        } = dbObj;
+        const values = [user_id, port, dir, pid, update_time, create_time, is_primary, primary_id, description, release_version]
         let saveSql = `
             insert into 
             dirs(user_id,port,dir,pid,update_time,create_time,is_primary,primary_id,description,release_version)
@@ -142,8 +154,24 @@ class CenterControl {
 
         console.log(saveSql)
         let conn = PrimaryRepoInst.getDB().promise()
-        const ret = await conn.query(saveSql,values)
+        const ret = await conn.query(saveSql, values)
         return ret;
+    }
+
+    public async releasePackage(dbObj: Record<string, any>) {
+        dbObj.create_time = moment().format("YYYY-MM-DD HH:mm:ss")
+        const {dir_id, user_id, package_version, package_info, package_path, create_time} = dbObj
+        const values = [dir_id, user_id, package_version, package_info, package_path, create_time]
+        let saveSql = `
+            insert into 
+            release_package
+            (dir_id,user_id,package_version,package_info,package_path,create_time)
+            values(${values.join(",")})
+        `;
+        let conn = PrimaryRepoInst.getDB().promise()
+        const ret = await conn.query(saveSql, values)
+        return ret;
+
     }
 }
 

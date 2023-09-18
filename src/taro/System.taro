@@ -39,6 +39,15 @@ struct SystemBase  {
         4   description         :   string;
     };
 
+    // 标题
+    ReleasePackageReq        :   {
+        1   dir_id          :   string;
+        2   user_id         :   string;
+        3   package_info    :   string;
+        4   package_version :   string;
+        5   dir_path        :   string;
+    };
+
 };
 
 
