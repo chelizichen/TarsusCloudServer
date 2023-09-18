@@ -31,6 +31,14 @@ struct SystemBase  {
         2   version             :       string;  // 版本
     };
 
+    // 创建项目
+    CreateProjectReq        :   {
+        1   dir                 :   string;
+        2   user_id             :   string;
+        3   port                :   string;
+        4   description         :   string;
+    };
+
 };
 
 

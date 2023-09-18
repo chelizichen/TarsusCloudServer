@@ -130,14 +130,17 @@ class CenterControl {
 
     public async saveDirs(dbObj:Record<string,any>) {
         dbObj.is_primary = 0;
-        dbObj.update_itme = dbObj.create_time
-        const {user_id,port,dir,pid,create_time,is_primary,primary_id,update_itme} = dbObj;
-        const values = [user_id,port,dir,pid,update_itme,create_time,is_primary,primary_id]
+        dbObj.update_time = dbObj.create_time
+        dbObj.pid = 1;
+        const {user_id,port,dir,pid,create_time,is_primary,primary_id,update_time,description,release_version} = dbObj;
+        const values = [user_id,port,dir,pid,update_time,create_time,is_primary,primary_id,description,release_version]
         let saveSql = `
             insert into 
-            dirs(user_id,port,dir,pid,update_itme,create_time,is_primary,primary_id)
+            dirs(user_id,port,dir,pid,update_time,create_time,is_primary,primary_id,description,release_version)
             values(${values.map(()=>"?").toString()})
         `
+
+        console.log(saveSql)
         let conn = PrimaryRepoInst.getDB().promise()
         const ret = await conn.query(saveSql,values)
         return ret;

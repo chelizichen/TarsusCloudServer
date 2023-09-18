@@ -1,7 +1,7 @@
 const fastJson = require('fast-json-stringify')
 const load_schema = {
     dtoMaps: {},
-    getResponse(res:string){
+    get(res:string){
         return load_schema.dtoMaps[res];
     }
 }

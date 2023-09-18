@@ -6,6 +6,7 @@
         "downlevelIteration":true,
         "target": "es5",
         "lib": ["es2022", "ESNext"],
-        "strict": false
+        "strict": false,
+        "sourceMap": true
     }
 }
