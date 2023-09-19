@@ -19,36 +19,46 @@ const opts: RouteShorthandOptions = {
 };
 
 type CustomRequest = FastifyRequest<{
-    Body: { dir_id: string; user_id: string; package_info: string; package_version: string; dir_path: string; };
+    Body: {
+        dir_id: string;
+        user_id: string;
+        package_info: string;
+        package_version: string;
+        dir_path: string;
+    };
 }>;
 
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
-    debugger
-    const {dir_path} = request.body;
+    const {dir_path, package_version} = request.body;
     // 拿到对应 项目的release Path
     const dirPath = path.resolve(routes, "api", dir_path)
+    const releaseDir = path.resolve(routes, "release")
+    if (!fs.existsSync(releaseDir)) {
+        fs.mkdirSync(releaseDir)
+    }
     const releasePath = path.resolve(routes, "release", dir_path);
     if (!fs.existsSync(releasePath)) {
         fs.mkdirSync(releasePath)
     }
+    const releaseFilePath = path.resolve(releaseDir, dir_path, `${dir_path}_v${package_version}.tar.gz`);
     tar.c({
         gzip: true,
-        file: releasePath,
-        cwd: path.dirname(dirPath) // 设置工作目录为要打包的目录的父目录
-    }, [path.basename(dirPath)]).then(async () => {
-        const dbRows = request.body
-        try {
-            await centerControl.releasePackage(dbRows)
+        file: releaseFilePath,
+        cwd: path.dirname(dirPath)
+    }, [path.basename(dirPath)])
+        .then(async () => {
+            const dbRows = request.body;
+            await centerControl.releasePackage(dbRows);
             reply.send(Reply(ReplyBody.success, ReplyBody.success_message, {
                 dirPath: dirPath,
-            }))
-        } catch (e) {
-            reply.send(Reply(ReplyBody.error, ReplyBody.mkdir_err, null))
-        }
-    }).catch(err => {
-        reply.send(Reply(ReplyBody.error, ReplyBody.mkdir_err, null))
-    })
+            }));
+        })
+        .catch(err => {
+            console.log(err);
+            reply.send(Reply(ReplyBody.error, ReplyBody.mkdir_err, null));
+        });
+
 };
 
 export default async function () {

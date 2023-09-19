@@ -166,7 +166,7 @@ class CenterControl {
             insert into 
             release_package
             (dir_id,user_id,package_version,package_info,package_path,create_time)
-            values(${values.join(",")})
+            values(${values.map(()=>"?").toString()})
         `;
         let conn = PrimaryRepoInst.getDB().promise()
         const ret = await conn.query(saveSql, values)
