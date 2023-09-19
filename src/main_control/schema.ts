@@ -6,7 +6,7 @@ const load_schema = {
     }
 }
 
-function typeMapping(type, mapData) {
+export function typeMapping(type, mapData) {
     switch (type) {
         case 'int': return {type:'number'};
         case 'string': return {type:'string'};
@@ -20,7 +20,7 @@ function typeMapping(type, mapData) {
     }
 }
 
-function generateSchemaFromMap(mapData) {
+export function generateSchemaFromMap(mapData) {
     let result = {};
 
     for (let [key, value] of mapData) {
