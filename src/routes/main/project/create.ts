@@ -41,7 +41,7 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const dbRows = getDirObj(request.body);
     const dirPath = path.resolve(routes, "api", dir);
     const taroPath = path.resolve(routes, "taro", dir+".taro");
-    const taroTsPath = path.resolve(routes, "taro", dir+".ts");
+    const taroTsPath = path.resolve(routes, "taro", dir+".js");
     try{
         await centerControl.saveDirs(dbRows)
         fs.mkdirSync(dirPath);
