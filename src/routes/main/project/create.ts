@@ -5,6 +5,7 @@ import fs from "fs";
 import { Reply, ReplyBody, centerControl } from "../../../main_control/define";
 import moment from "moment";
 import load_schema from "../../../main_control/schema";
+import { taroTemplate, taroTsTemplate } from "../../../main_control/template/taro";
 
 const routes = process.env.routes_path;
 
@@ -44,8 +45,10 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     try{
         await centerControl.saveDirs(dbRows)
         fs.mkdirSync(dirPath);
+        fs.writeFileSync(taroPath,taroTemplate(dir))
+        fs.writeFileSync(taroTsPath,taroTsTemplate(dir))
         // todo 写结构体文件和TS
-    
+
         return Reply(ReplyBody.success, ReplyBody.success_message, {
             dirPath: dirPath,
         });

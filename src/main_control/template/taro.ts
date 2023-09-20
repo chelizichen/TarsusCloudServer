@@ -1,3 +1,4 @@
+let taroTsTemplate = (dirName) => `
 import path from "path";
 import {generateSchemaFromMap} from "../../main_control/schema";
 const { TarsusStream,TarsusReadStream } = require("tarsus-cli/taro");
@@ -16,7 +17,7 @@ const stream_proxy = {
 }
 
 const routes = process.env.routes_path;
-const fileName = "leemulus.taro"
+const fileName = "${dirName}.taro"
 const load_schema = {
     dtoMaps: {},
     get(res: string) {
@@ -35,4 +36,29 @@ initSchema();
 
 export {
     load_schema
+}
+`
+
+let taroTemplate = (dirName)=>`
+/**
+* @description ${dirName}结构体
+*/
+
+java_struct_package = https://github.com/chelizichen;
+java_inf_package =  https://github.com/chelizichen;
+
+struct ${dirName}Taro  {
+
+
+};
+
+
+interface ${dirName}Inf  {
+
+};
+`
+
+export{
+    taroTsTemplate,
+    taroTemplate
 }
