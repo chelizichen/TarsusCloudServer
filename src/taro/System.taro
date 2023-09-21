@@ -48,6 +48,26 @@ struct SystemBase  {
         5   dir_path        :   string;
     };
 
+    // 协议文件结构体
+    TaroBaseReq            :   {
+        1   dir             :   string;
+        2   content         :   string;
+    };
+
+    // 协议接口响应
+    GetTaroFileRsp          :   {
+        1   code            :   string;
+        1   message         :   string;
+        1   data            :   string;
+    };
+
+        // 协议接口响应
+    TouchTaroFileRsp          :   {
+        1   code            :   string;
+        1   message         :   string;
+        1   data            :   string;
+    };
+
 };
 
 
