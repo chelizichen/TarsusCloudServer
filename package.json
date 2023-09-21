@@ -9,11 +9,13 @@
   "dependencies": {
     "@fastify/http-proxy": "9.2.1",
     "@fastify/reply-from": "^9.4.0",
+    "@types/fs-extra": "^11.0.2",
     "axios": "^1.5.0",
     "cron": "^2.4.1",
     "fast-json-stringify": "^5.8.0",
     "fastify": "^4.22.2",
     "fastify-plugin": "^4.5.1",
+    "fs-extra": "^11.1.1",
     "http-proxy": "^1.18.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

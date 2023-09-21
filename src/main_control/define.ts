@@ -157,7 +157,14 @@ class CenterControl {
         const ret = await conn.query(saveSql, values)
         return ret;
     }
-
+    public async delDirs(id:string,dir:string){
+        const sql = `
+        delete from dirs where id =${id} and dir = ${dir}
+        `
+        let conn = PrimaryRepoInst.getDB().promise()
+        const ret = await conn.query(sql)
+        return ret;
+    }
     public async releasePackage(dbObj: Record<string, any>) {
         dbObj.create_time = moment().format("YYYY-MM-DD HH:mm:ss")
         const {dir_id, user_id, package_version, package_info, package_path, create_time} = dbObj
@@ -173,6 +180,7 @@ class CenterControl {
         return ret;
 
     }
+
 }
 
 export const centerControl = new CenterControl()

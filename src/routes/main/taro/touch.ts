@@ -1,7 +1,7 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
 import path from "path";
 import { Reply, ReplyBody} from "../../../main_control/define";
-import { existsSync, unlinkSync, writeFileSync } from "fs";
+import {existsSync, mkdirSync, unlinkSync, writeFileSync} from "fs";
 import load_schema from "../../../main_control/schema";
 
 
@@ -24,6 +24,10 @@ type CustomRequest = FastifyRequest<{
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {dir,content} = request.body
+    const userTaroPath = path.resolve(routes,'taro')
+    if(!existsSync(userTaroPath)){
+        mkdirSync(userTaroPath)
+    }
     const filePath = path.resolve(routes,"taro",dir+".taro");
     if(existsSync(filePath)){
         unlinkSync(filePath)

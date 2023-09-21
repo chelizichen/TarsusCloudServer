@@ -6,6 +6,11 @@ java_struct_package = https://github.com/chelizichen;
 java_inf_package =  https://github.com/chelizichen;
 
 struct SystemBase  {
+
+    QueryIdReq                  :   {
+        1   id                  :   string;
+    };
+
     BaseResponse                :   {
         1   code                :       int;    // 
         2   message             :       string; // 
@@ -37,6 +42,12 @@ struct SystemBase  {
         2   user_id             :   string;
         3   port                :   string;
         4   description         :   string;
+    };
+
+    // 删除项目
+    DeleteProjectReq        :   {
+        1   id                 :   string;
+        2   dir                :   string;
     };
 
     // 标题
