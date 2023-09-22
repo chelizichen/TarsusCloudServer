@@ -159,10 +159,10 @@ class CenterControl {
     }
     public async delDirs(id:string,dir:string){
         const sql = `
-        delete from dirs where id =${id} and dir = ${dir}
+            delete from dirs where id = ? and dir = ?
         `
         let conn = PrimaryRepoInst.getDB().promise()
-        const ret = await conn.query(sql)
+        const ret = await conn.query(sql,[id,dir])
         return ret;
     }
     public async releasePackage(dbObj: Record<string, any>) {

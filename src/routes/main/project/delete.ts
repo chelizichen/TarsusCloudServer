@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest, RouteShorthandOptions } from "fastify";
 import path from "path";
-import fs, {unlinkSync} from "fs";
+import fs, {existsSync, unlinkSync} from "fs";
 import { Reply, ReplyBody, centerControl } from "../../../main_control/define";
 import load_schema from "../../../main_control/schema";
 import fsExtra from 'fs-extra'
@@ -27,10 +27,17 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const taroPath = path.resolve(routes, "taro", dir+".taro");
     const taroTsPath = path.resolve(routes, "taro", dir+".js");
     try{
-        fsExtra.removeSync(dirPath)
-        unlinkSync(taroPath)
-        unlinkSync(taroTsPath)
-        await centerControl.delDirs(id,dir)
+        if(existsSync(dirPath)){
+            fsExtra.removeSync(dirPath)
+        }
+        if(existsSync(taroPath)){
+            unlinkSync(taroPath)
+        }
+        if(existsSync(taroTsPath)){
+            unlinkSync(taroTsPath)
+        }
+        const delRet = await centerControl.delDirs(id,dir)
+        console.log(delRet);
         return Reply(ReplyBody.success, ReplyBody.success_message, {
             dirPath: dirPath,
         });
