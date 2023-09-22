@@ -75,8 +75,14 @@ java_struct_package = https://github.com/chelizichen;
 java_inf_package =  https://github.com/chelizichen;
 
 struct ${dirName}Taro  {
+    QueryIdReq                  :   {
+        1   id                  :   string;
+    };
 
-
+    BaseResponse                :   {
+        1   code                :       int;    // 
+        2   message             :       string; // 
+    };
 };
 
 

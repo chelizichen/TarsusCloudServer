@@ -80,6 +80,7 @@ async function startServer() {
         process.env.user_path =  worker_env.dir
         console.log( process.env.user_path)
         const taro_path = path.resolve(routes_path,'taro',process.env.user_path)
+        console.log('load taro_ts_path',taro_path,' success');
         await import(taro_path)
         try {
             await reset_node(worker_env);
