@@ -6,13 +6,14 @@ const stream_proxy = {
     TarsusStream,
     TarsusReadStream,
     SetStream(url:string) {
-        new TarsusStream(url);
+        stream_proxy.StreamInstance = new TarsusStream(url);
     },
 
     Parse(...args:any[]) {
         return TarsusStream.parse(...args);
     },
-    StreamMap:{}
+    StreamMap:{},
+    StreamInstance:null
 }
 
 const routes = process.env.routes_path;
@@ -21,7 +22,8 @@ const load_schema = {
     dtoMaps: {},
     get(res: string) {
         return load_schema.dtoMaps[res];
-    }
+    },
+    stream_proxy:stream_proxy
 }
 
 function initSchema() {
@@ -34,5 +36,6 @@ function initSchema() {
 initSchema();
 
 export {
-    load_schema
+    load_schema,
+    initSchema
 }

@@ -65,6 +65,12 @@ struct SystemBase  {
         2   content         :   string;
     };
 
+
+    SetTaroInfReq            :   {
+        1   dir             :   string;
+        2   target          :   string;
+    };
+
     // 协议接口响应
     GetTaroFileRsp          :   {
         1   code            :   string;

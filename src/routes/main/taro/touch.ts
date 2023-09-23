@@ -29,12 +29,15 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
         mkdirSync(userTaroPath)
     }
     const filePath = path.resolve(routes,"taro",dir+".taro");
+    const jsPath = path.resolve(routes,'taro',dir+'.js')
     if(existsSync(filePath)){
         unlinkSync(filePath)
     }
     writeFileSync(filePath,content,{
         'encoding':'utf-8'
     })
+    const {initSchema} = require(jsPath)
+    initSchema()
     return Reply(ReplyBody.success, ReplyBody.success_message, null);
 }
 
