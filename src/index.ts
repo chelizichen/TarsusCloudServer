@@ -8,7 +8,7 @@ process.env.IsProd = '1';
 import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
 import stream_proxy from "./main_control/taro";
-import { readdirSync } from "fs";
+import { readdirSync, writeFileSync } from "fs";
 import { cwd } from "process";
 import load_schema, { generateSchemaFromMap } from "./main_control/schema";
 
@@ -21,6 +21,8 @@ function LoadTaro() {
         });
         const structMaps    = stream_proxy.TarsusStream.struct_map
         const schemaMaps    = generateSchemaFromMap(structMaps)
+        const systemTaroJsFilePath = path.resolve(__dirname,'./taro','System.json')
+        writeFileSync(systemTaroJsFilePath,JSON.stringify(schemaMaps),'utf-8')
         load_schema.dtoMaps = schemaMaps;
 }
 
