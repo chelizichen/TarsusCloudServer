@@ -16,7 +16,6 @@ function LoadTaro() {
         const full_path = path.resolve(cwd(), taro_path);
         const dirs      = readdirSync(full_path);
         dirs.forEach((interFace) => {
-            console.log('interFace',interFace);
             if(interFace.endsWith(".taro")){
                 const taro_path = path.resolve(full_path, interFace);
                 stream_proxy.SetStream(taro_path);
