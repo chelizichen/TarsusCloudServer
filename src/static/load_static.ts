@@ -6,7 +6,7 @@ const cwd = process.cwd();
 function load_static(server:FastifyInstance){
     server.register((fastifyStatic), {
         root: path.join(cwd, 'public'),
-        prefix: '/admin/',
+        prefix: '/tarsuscloud/',
     });
 }
 
