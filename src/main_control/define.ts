@@ -181,6 +181,33 @@ class CenterControl {
 
     }
 
+    public async showTables() {
+        let saveSql = `
+            show tables;
+        `;
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [ret] = await conn.query(saveSql)
+        // @ts-ignore
+        const tables = ret.map(item=>{
+            return Object.values(item)[0]
+        })
+        return tables;
+    }
+
+    public async showTableDeatil(table:string) {
+        let saveSql = `
+            DESC  ${table};
+        `;
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [ret] = await conn.query(saveSql)
+        return ret;
+    }
+
+    public async query(sql,values) {
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [ret] = await conn.query(sql,values)
+        return ret;
+    }
 }
 
 export const centerControl = new CenterControl()

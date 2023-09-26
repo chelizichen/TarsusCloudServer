@@ -4,7 +4,7 @@ const routes_path = path.resolve(__dirname, "routes")
 const taro_path = path.resolve(__dirname, "taro")
 process.env.routes_path = routes_path;
 process.env.taro_path = taro_path;
-process.env.IsProd = '1';
+process.env.IsProd = '0';
 import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
 import stream_proxy from "./main_control/taro";
