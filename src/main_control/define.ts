@@ -2,12 +2,33 @@ import {nodeStats} from "./reset";
 import {createPool} from 'mysql2'
 import {Pool, PoolOptions} from 'mysql2'
 import moment from "moment";
+import { RedisClientType, createClient } from "redis";
 
 export enum ReplyBody {
     success = 0,
     error = -1,
     success_message = "ok",
     mkdir_err = "创建目录失败"
+}
+
+export enum ElementUIComponents{
+    TABLE,
+    SELECT,
+    OPTIONS,
+    PAGINATION,
+    API
+}
+
+export enum ApiType{
+    ADD,
+    DELETE,
+    UPDATE,
+    SEARCH,
+}
+
+export type FileConfig = {
+    fileName:string;
+    fileUid:string
 }
 
 export const Reply = (code: ReplyBody, message: ReplyBody, data: any) => {
@@ -36,7 +57,7 @@ export type node_config = {
 
 class PrimaryRepo {
 
-    // private _RedisTemplate: RedisClientType;
+    private _RedisTemplate: RedisClientType;
     private _DbConnection: Pool
 
     public getDB(): Pool {
@@ -45,9 +66,10 @@ class PrimaryRepo {
 
     constructor() {
         this.setDB();
+        this.setRds();
     }
 
-    public setDB() {
+    private setDB() {
         const poolConfig: PoolOptions = {
             user: "root",
             password: "123456",
@@ -58,9 +80,15 @@ class PrimaryRepo {
         }
         this._DbConnection = createPool(poolConfig);
     }
+    public getRds(){
+        return this._RedisTemplate;
+    }
+    private setRds(){
+        this._RedisTemplate = createClient()
+    }
 }
 
-const PrimaryRepoInst = new PrimaryRepo()
+export const PrimaryRepoInst = new PrimaryRepo()
 
 class CenterControl {
     public async setPid(port: string, pid: string | number) {
