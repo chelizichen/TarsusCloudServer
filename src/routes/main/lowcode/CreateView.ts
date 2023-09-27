@@ -24,5 +24,6 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
         message:'ok'
     })
 }
-export default [opts, handleFunc]
-
+export default async function () {
+    return [opts, handleFunc];
+}

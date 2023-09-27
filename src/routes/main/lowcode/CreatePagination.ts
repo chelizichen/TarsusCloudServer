@@ -6,21 +6,17 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-type TableConfig = {
-    data:Array<{
-        columnName:string;
-        filedName:string;
-        isAlignCenter:boolean;
-        isBorder:boolean;
-        columnUid:string;
-        modelData:string;//will create vmodel
-        type:ElementUIComponents.TABLE;
-    }>;
+type PaginationConfig = {
+    NameOfOffset:string; // will create vmodel
+    NameOfSize:string; // will create vmodel
+    QueryApi:string;
     uid:string;
-} & FileConfig;
+    targetTableUid:string;
+    type:ElementUIComponents.PAGINATION
+} & FileConfig
 
 type CustomRequest = FastifyRequest<{
-    Body: TableConfig;
+    Body: PaginationConfig;
 }>
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
@@ -33,5 +29,6 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
         message:'ok'
     })
 }
-export default [opts, handleFunc]
-
+export default async function () {
+    return [opts, handleFunc];
+}

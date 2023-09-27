@@ -1,23 +1,20 @@
 import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
-import {ElementUIComponents, FileConfig, PrimaryRepoInst} from '../../../main_control/define'
+import {FileConfig, PrimaryRepoInst} from '../../../main_control/define'
 
 const opts: RouteShorthandOptions = {
     schema: {
     }
 }
 
-type OptionConfig = {
-    NameOflabel:string;
-    NameOfValue:string;
-    type:ElementUIComponents.OPTIONS
+type ColumnDetailConfig = {
+    targetTableUid:string;
     uid:string;
+    row:string;
 } & FileConfig
 
 type CustomRequest = FastifyRequest<{
-    Body: OptionConfig;
+    Body: ColumnDetailConfig;
 }>
-
-
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {uid,fileUid} = request.body
@@ -29,5 +26,6 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
         message:'ok'
     })
 }
-export default [opts, handleFunc]
-
+export default async function () {
+    return [opts, handleFunc];
+}
