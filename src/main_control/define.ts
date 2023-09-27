@@ -16,7 +16,8 @@ export enum ElementUIComponents{
     SELECT,
     OPTIONS,
     PAGINATION,
-    API
+    API,
+    BUTTON
 }
 
 export enum ApiType{
@@ -85,6 +86,7 @@ class PrimaryRepo {
     }
     private setRds(){
         this._RedisTemplate = createClient()
+        this._RedisTemplate.connect()
     }
 }
 

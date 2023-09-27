@@ -18,10 +18,11 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {uid,fileUid} = request.body
     const rds = PrimaryRepoInst.getRds()
     const data = await rds.hGet(fileUid,uid);
+    const ret = JSON.parse(data)
     reply.code(200).send({
         code:0,
         message:'ok',
-        data
+        data:ret
     })
 }
 export default async function () {

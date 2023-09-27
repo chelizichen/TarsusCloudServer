@@ -6,23 +6,18 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-type FileConfig = {
-    fileName:string;
-    fileUid:string
-}
 
 type CustomRequest = FastifyRequest<{
-    Body: FileConfig;
 }>
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
-    const {fileUid,fileName} = request.body
     const rds = PrimaryRepoInst.getRds()
-    await rds.hSet(fileUid,'fileName',fileName)
-    await rds.lPush('FileUids',JSON.stringify(request.body))
+    const data = await rds.lRange('FileUids',0,-1)
+    const ret = data.map(item=>JSON.parse(item))
     reply.code(200).send({
         code:0,
-        message:'ok'
+        message:'ok',
+        data:ret
     })
 }
 export default async function () {
