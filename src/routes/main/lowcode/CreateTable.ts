@@ -6,18 +6,19 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-type TableConfig = {
+export type TableConfig = {
     data:Array<{
         columnName:string;
         filedName:string;
-        isAlignCenter:boolean;
-        isBorder:boolean;
-        uid:string;
-        type:ElementUIComponents.TABLE;
+        columnUid:string;
     }>;
-    uid:string;
     modelData:string;//will create vmodel
-} & FileConfig;
+    uid:string;
+    text:string;
+    isBorder:boolean;
+    isAlignCenter:boolean;
+    type:ElementUIComponents.TABLE;
+} & Pick<FileConfig, 'fileUid'>;
 
 type CustomRequest = FastifyRequest<{
     Body: TableConfig;
