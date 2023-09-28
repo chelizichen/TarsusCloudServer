@@ -6,14 +6,14 @@ const opts: RouteShorthandOptions = {
     }
 }
 
-type PaginationConfig = {
+export type PaginationConfig = {
     NameOfOffset:string; // will create vmodel
     NameOfSize:string; // will create vmodel
-    QueryApi:string;
+    QueryApiUid:string;
     uid:string;
     targetTableUid:string;
     type:ElementUIComponents.PAGINATION
-} & FileConfig
+} & Pick<FileConfig, 'fileUid'>
 
 type CustomRequest = FastifyRequest<{
     Body: PaginationConfig;
