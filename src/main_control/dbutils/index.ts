@@ -1,5 +1,6 @@
 import query from "../../routes/main/db/query";
 import {result, size} from "lodash";
+import { PrimaryRepoInst } from "../define";
 
 type SelectConfig = {
     offset:string;
@@ -16,9 +17,18 @@ interface DBManager{
     saveData(tableName:string,record:Record<string, string>):any;
     updateData(tableName:string,record:Record<string, string>,id:string):any;
     deleteData(tableName:string,record:Record<string, string>):any;
+    execute(sql:string)
 }
 
 class TarsusDBManager implements DBManager{
+    public PrimaryRepo:typeof PrimaryRepoInst;
+    
+    constructor(){
+        this.PrimaryRepo = PrimaryRepoInst;
+    }
+    execute(sql: string) {
+    }
+
     queryStruct(tableName: string): any[] {
         return [];
     }
