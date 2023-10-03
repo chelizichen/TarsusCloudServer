@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest, RouteShorthandOptions } from "fastify";
 import { Reply, ReplyBody, centerControl } from "../../../main_control/define";
 import load_schema from "../../../main_control/schema";
+import { SelectConfig } from "../../../main_control/dbutils";
 
 const routes = process.env.routes_path;
 
@@ -9,18 +10,19 @@ const opts: RouteShorthandOptions = {
         // response: {
         //     200:load_schema.get("BaseResponse")
         // },
-        body: load_schema.get("CreateProjectReq"),
+        // body: load_schema.get("CreateProjectReq"),
     },
 };
 
 type CustomRequest = FastifyRequest<{
-    Body: { dir: string; user_id: string; };
+    Querystring: { tableName:string };
 }>;
 
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
+    const {tableName} = request.query
     try{
-        const data = await centerControl.showTableDeatil("dirs")
+        const data = await centerControl.showTableDeatil(tableName)
         return Reply(ReplyBody.success, ReplyBody.success_message, data);
     }catch(e){
         return Reply(ReplyBody.error,ReplyBody.mkdir_err,null)

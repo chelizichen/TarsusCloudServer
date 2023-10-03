@@ -233,7 +233,7 @@ class CenterControl {
         return ret;
     }
 
-    public async query(sql,values) {
+    public async query(sql,values?) {
         let conn = PrimaryRepoInst.getDB().promise()
         const [ret] = await conn.query(sql,values)
         return ret;

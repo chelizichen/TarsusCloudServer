@@ -2,7 +2,7 @@ import query from "../../routes/main/db/query";
 import {result, size} from "lodash";
 import { PrimaryRepoInst } from "../define";
 
-type SelectConfig = {
+export type SelectConfig = {
     offset:string;
     size:string;
     searchFields:Array<{keyword:string,value:string}>;
@@ -13,14 +13,14 @@ type SelectConfig = {
 interface DBManager{
     queryStruct(tableName:string):any[];
     queryTables():any[]
-    selectData(tableName:string,selectConfig:SelectConfig):any[];
+    selectData(tableName:string,selectConfig:SelectConfig):string;
     saveData(tableName:string,record:Record<string, string>):any;
     updateData(tableName:string,record:Record<string, string>,id:string):any;
     deleteData(tableName:string,record:Record<string, string>):any;
     execute(sql:string)
 }
 
-class TarsusDBManager implements DBManager{
+class TarsusDBUtils implements DBManager{
     public PrimaryRepo:typeof PrimaryRepoInst;
     
     constructor(){
@@ -60,16 +60,9 @@ class TarsusDBManager implements DBManager{
         // 处理分页
         query += ` LIMIT ${size} OFFSET ${offset}`;
 
-        // 模拟执行查询
-        const result = {
-            query: query, // 查询语句（仅用于演示）
-            data: [] // 查询结果数据（根据实际情况填充）
-        };
-
-        console.log('执行查询：', result.query);
-        console.log('查询结果：', result.data);
-
-        return result.data;
+        console.log('query sql >> ',query);
+        
+        return query;
     }
 
     deleteData(tableName: string, record: Record<string, string>): any {
@@ -100,3 +93,5 @@ class TarsusDBManager implements DBManager{
     }
 
 }
+
+export const TarsusDBInst = new TarsusDBUtils()
