@@ -15,7 +15,7 @@ interface DBManager{
     queryTables():any[]
     selectData(tableName:string,selectConfig:SelectConfig):string;
     saveData(tableName:string,record:Record<string, string>):any;
-    updateData(tableName:string,record:Record<string, string>,id:string):any;
+    updateData(tableName:string,record:Record<string, string>,where:Record<string, any>):any;
     deleteData(tableName:string,record:Record<string, string>):any;
     execute(sql:string)
 }
@@ -84,10 +84,10 @@ class TarsusDBUtils implements DBManager{
         return sql;
     }
 
-    updateData(tableName: string, record: Record<string, string>, id: string): any {
+    updateData(tableName: string, record: Record<string, string>, whereParams: Record<string, any>): any {
         const updates = Object.entries(record).map(([key, value]) => `${key} = '${value}'`).join(', ');
-        const sql = `UPDATE ${tableName} SET ${updates} WHERE id = '${id}';`;
-
+        const whereSql = Object.entries(whereParams).map(([key, value]) => `${key} = '${value}'`).join('and');
+        const sql = `UPDATE ${tableName} SET ${updates} WHERE ${whereSql} `;
         // 返回 SQL 语句
         return sql;
     }
