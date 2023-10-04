@@ -34,10 +34,11 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
         generateSql = TarsusDBInst.updateData(tableName,data,where)
     }
     try{
+        console.log('generateSql',generateSql)
         const data = await centerControl.query(generateSql)
         return Reply(ReplyBody.success, ReplyBody.success_message, data);
     }catch(e){
-        return Reply(ReplyBody.error,ReplyBody.mkdir_err,null)
+        return Reply(ReplyBody.error,'执行SQL失败',e)
     }
 };
 

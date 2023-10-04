@@ -32,7 +32,7 @@ export type FileConfig = {
     fileUid:string
 }
 
-export const Reply = (code: ReplyBody, message: ReplyBody, data: any) => {
+export const Reply = (code: ReplyBody, message: ReplyBody | string, data: any) => {
     return {
         code,
         message,
