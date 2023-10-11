@@ -218,6 +218,20 @@ class CenterControl {
         return tables;
     }
 
+    public async showDatabases(){
+        let saveSql = `
+            show databases;
+        `;
+        let conn = PrimaryRepoInst.getDB().promise()
+        const [ret] = await conn.query(saveSql)
+        // @ts-ignore
+        const databases = ret.map(item=>{
+            return Object.values(item)[0]
+        })
+        return databases;
+    }
+
+
     public async showTableDeatil(table:string) {
         let saveSql = `
             DESC  ${table};
