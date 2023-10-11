@@ -70,10 +70,11 @@ class PrimaryRepo {
         this.setRds();
     }
 
-    private setDB() {
+    public setDB(poolConn?) {
         const poolConfig: PoolOptions = JSON.parse(process.env.poolConfig)
-        this._DbConnection = createPool(poolConfig);
+        this._DbConnection = poolConn || createPool(poolConfig);
     }
+
     public getRds(){
         return this._RedisTemplate;
     }
@@ -245,6 +246,16 @@ class CenterControl {
         let conn = PrimaryRepoInst.getDB().promise()
         const [ret] = await conn.query(sql,values)
         return ret;
+    }
+
+    public resetDb(newDatabaseName:string){
+        PrimaryRepoInst.getDB().end(); // 关闭旧的连接池
+        const newPoolConfig = {
+            ...JSON.parse(process.env.poolConfig), // 保留原始配置，仅修改数据库名称
+            database: newDatabaseName,
+        };
+        const newPool = createPool(newPoolConfig);
+        PrimaryRepoInst.setDB(newPool)
     }
 }
 
