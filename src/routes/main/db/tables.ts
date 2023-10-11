@@ -23,7 +23,7 @@ const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
         const data = await centerControl.showTables()
         return Reply(ReplyBody.success, ReplyBody.success_message, data);
     }catch(e){
-        return Reply(ReplyBody.error,ReplyBody.mkdir_err,null)
+        return Reply(ReplyBody.error,'查询数据库表错误',e)
     }
 
 };

@@ -71,14 +71,7 @@ class PrimaryRepo {
     }
 
     private setDB() {
-        const poolConfig: PoolOptions = {
-            user: "root",
-            password: "123456",
-            port: 3306,
-            host: "localhost",
-            database: "serverless",
-            connectionLimit: 10,
-        }
+        const poolConfig: PoolOptions = JSON.parse(process.env.poolConfig)
         this._DbConnection = createPool(poolConfig);
     }
     public getRds(){
@@ -217,6 +210,7 @@ class CenterControl {
         `;
         let conn = PrimaryRepoInst.getDB().promise()
         const [ret] = await conn.query(saveSql)
+        console.log('ret',ret);
         // @ts-ignore
         const tables = ret.map(item=>{
             return Object.values(item)[0]

@@ -1,10 +1,6 @@
 import cluster from "cluster";
 import path from "path";
-const routes_path = path.resolve(__dirname, "routes")
-const taro_path = path.resolve(__dirname, "taro")
-process.env.routes_path = routes_path;
-process.env.taro_path = taro_path;
-process.env.IsProd = '0';
+import { taro_path, routes_path } from "./env";
 import { nodeStats, reset_node} from "./main_control/reset";
 import {centerControl, node_config} from "./main_control/define";
 import stream_proxy from "./main_control/taro";
@@ -29,6 +25,20 @@ function LoadTaro() {
 }
 
 async function startServer() {
+
+    // UP Private
+    if(Number(process.env.IsUp) == 0){
+        const up_node_config = {
+            is_primary: true,
+            port: 3401,
+            dir: '',
+        } as node_config
+        LoadTaro()
+        process.env.fastify_config = JSON.stringify(up_node_config)
+        reset_node(up_node_config)
+        return
+    }
+
     const primary_node:node_config = await centerControl.getPrimary();
     const worker_nodes:node_config[] = await centerControl.getWorkers();
     if(cluster.isPrimary){
