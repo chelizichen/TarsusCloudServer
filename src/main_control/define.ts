@@ -265,6 +265,7 @@ class CenterControl {
                 database: newDatabase,
             };
         } else {
+            process.env.poolConfig = JSON.stringify(newDatabase);
             newconfig = newDatabase
         }
         const newPool = createPool(newconfig);
