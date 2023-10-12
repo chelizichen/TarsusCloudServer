@@ -2,7 +2,7 @@ import {nodeStats} from "./reset";
 import {createPool} from 'mysql2'
 import {Pool, PoolOptions} from 'mysql2'
 import moment from "moment";
-import { RedisClientType, createClient } from "redis";
+import {RedisClientType, createClient} from "redis";
 
 export enum ReplyBody {
     success = 0,
@@ -11,7 +11,7 @@ export enum ReplyBody {
     mkdir_err = "创建目录失败"
 }
 
-export enum ElementUIComponents{
+export enum ElementUIComponents {
     TABLE,
     SELECT,
     OPTIONS,
@@ -20,7 +20,7 @@ export enum ElementUIComponents{
     BUTTON
 }
 
-export enum ApiType{
+export enum ApiType {
     ADD,
     DELETE,
     UPDATE,
@@ -28,8 +28,8 @@ export enum ApiType{
 }
 
 export type FileConfig = {
-    fileName:string;
-    fileUid:string
+    fileName: string;
+    fileUid: string
 }
 
 export const Reply = (code: ReplyBody, message: ReplyBody | string, data: any) => {
@@ -55,8 +55,8 @@ export type node_config = {
     primary_id: string,
 }
 
-export enum rds_key{
-    GET_ALL_DB='get_all_db',
+export enum rds_key {
+    GET_ALL_DB = 'get_all_db',
 }
 
 class PrimaryRepo {
@@ -78,12 +78,15 @@ class PrimaryRepo {
         this._DbConnection = poolConn || createPool(poolConfig);
     }
 
-    public getRds(){
+    public getRds() {
         return this._RedisTemplate;
     }
-    private setRds(){
+
+    private setRds() {
         this._RedisTemplate = createClient()
-        this._RedisTemplate.connect()
+        setImmediate(() => {
+            this._RedisTemplate.connect()
+        })
     }
 }
 
@@ -184,14 +187,16 @@ class CenterControl {
         const ret = await conn.query(saveSql, values)
         return ret;
     }
-    public async delDirs(id:string,dir:string){
+
+    public async delDirs(id: string, dir: string) {
         const sql = `
             delete from dirs where id = ? and dir = ?
         `
         let conn = PrimaryRepoInst.getDB().promise()
-        const ret = await conn.query(sql,[id,dir])
+        const ret = await conn.query(sql, [id, dir])
         return ret;
     }
+
     public async releasePackage(dbObj: Record<string, any>) {
         dbObj.create_time = moment().format("YYYY-MM-DD HH:mm:ss")
         const {dir_id, user_id, package_version, package_info, package_path, create_time} = dbObj
@@ -214,29 +219,29 @@ class CenterControl {
         `;
         let conn = PrimaryRepoInst.getDB().promise()
         const [ret] = await conn.query(saveSql)
-        console.log('ret',ret);
+        console.log('ret', ret);
         // @ts-ignore
-        const tables = ret.map(item=>{
+        const tables = ret.map(item => {
             return Object.values(item)[0]
         })
         return tables;
     }
 
-    public async showDatabases(){
+    public async showDatabases() {
         let saveSql = `
             show databases;
         `;
         let conn = PrimaryRepoInst.getDB().promise()
         const [ret] = await conn.query(saveSql)
         // @ts-ignore
-        const databases = ret.map(item=>{
+        const databases = ret.map(item => {
             return Object.values(item)[0]
         })
         return databases;
     }
 
 
-    public async showTableDeatil(table:string) {
+    public async showTableDeatil(table: string) {
         let saveSql = `
             DESC  ${table};
         `;
@@ -245,21 +250,21 @@ class CenterControl {
         return ret;
     }
 
-    public async query(sql,values?) {
+    public async query(sql, values?) {
         let conn = PrimaryRepoInst.getDB().promise()
-        const [ret] = await conn.query(sql,values)
+        const [ret] = await conn.query(sql, values)
         return ret;
     }
 
-    public resetDb(newDatabase:string | PoolOptions){
+    public resetDb(newDatabase: string | PoolOptions) {
         PrimaryRepoInst.getDB().end(); // 关闭旧的连接池
-        let newconfig:PoolOptions;
-        if(typeof newDatabase == "string"){
+        let newconfig: PoolOptions;
+        if (typeof newDatabase == "string") {
             newconfig = {
                 ...JSON.parse(process.env.poolConfig), // 保留原始配置，仅修改数据库名称
                 database: newDatabase,
             };
-        }else{
+        } else {
             newconfig = newDatabase
         }
         const newPool = createPool(newconfig);
