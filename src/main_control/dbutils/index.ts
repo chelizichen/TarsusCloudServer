@@ -1,6 +1,7 @@
 import query from "../../routes/main/db/query";
 import {result, size} from "lodash";
-import { PrimaryRepoInst } from "../define";
+import { PrimaryRepoInst, rds_key } from "../define";
+import moment from "moment";
 
 export type SelectConfig = {
     offset:string;
@@ -91,7 +92,17 @@ class TarsusDBUtils implements DBManager{
         // 返回 SQL 语句
         return sql;
     }
+    async getAllDBRecords(){
+        const rds = this.PrimaryRepo.getRds()
+        const data = await rds.zRange(rds_key.GET_ALL_DB,0,-1,'WITHSCORES');
+        return data;
+    }
 
+    async setDBRecord(config){
+        const rds = this.PrimaryRepo.getRds()
+        const now = moment().valueOf()
+        await rds.zAdd(rds_key.GET_ALL_DB, now, JSON.stringify(config));
+    }
 }
 
 export const TarsusDBInst = new TarsusDBUtils()

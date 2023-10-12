@@ -55,6 +55,9 @@ export type node_config = {
     primary_id: string,
 }
 
+export enum rds_key{
+    GET_ALL_DB='get_all_db',
+}
 
 class PrimaryRepo {
 
