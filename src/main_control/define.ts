@@ -248,13 +248,18 @@ class CenterControl {
         return ret;
     }
 
-    public resetDb(newDatabaseName:string){
+    public resetDb(newDatabase:string | PoolOptions){
         PrimaryRepoInst.getDB().end(); // 关闭旧的连接池
-        const newPoolConfig = {
-            ...JSON.parse(process.env.poolConfig), // 保留原始配置，仅修改数据库名称
-            database: newDatabaseName,
-        };
-        const newPool = createPool(newPoolConfig);
+        let newconfig:PoolOptions;
+        if(typeof newDatabase == "string"){
+            newconfig = {
+                ...JSON.parse(process.env.poolConfig), // 保留原始配置，仅修改数据库名称
+                database: newDatabase,
+            };
+        }else{
+            newconfig = newDatabase
+        }
+        const newPool = createPool(newconfig);
         PrimaryRepoInst.setDB(newPool)
     }
 }

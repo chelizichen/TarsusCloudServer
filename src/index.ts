@@ -27,7 +27,7 @@ function LoadTaro() {
 async function startServer() {
 
     // UP Private
-    if(Number(process.env.IsUp) == 0){
+    if(Number(process.env.IsOnlyDB) == 1){
         const up_node_config = {
             is_primary: true,
             port: 3401,
