@@ -94,14 +94,14 @@ class TarsusDBUtils implements DBManager{
     }
     async getAllDBRecords(){
         const rds = this.PrimaryRepo.getRds()
-        const data = await rds.zRange(rds_key.GET_ALL_DB,0,-1,'WITHSCORES');
+        const data = await rds.zRangeWithScores(rds_key.GET_ALL_DB, 0, -1);
         return data;
     }
 
     async setDBRecord(config){
         const rds = this.PrimaryRepo.getRds()
         const now = moment().valueOf()
-        await rds.zAdd(rds_key.GET_ALL_DB, now, JSON.stringify(config));
+        await rds.zAdd(rds_key.GET_ALL_DB,[{score:now,value:JSON.stringify(config)}]);
     }
 }
 
