@@ -1,33 +1,38 @@
-import query from "../../routes/main/db/query";
-import {result, size} from "lodash";
-import { PrimaryRepoInst, rds_key } from "../define";
+import {PrimaryRepoInst, rds_key} from "../define";
 import moment from "moment";
-import { PoolOptions } from "mysql2";
+import {PoolOptions} from "mysql2";
 
 export type SelectConfig = {
-    offset:string;
-    size:string;
-    searchFields:Array<{keyword:string,value:string}>;
-    descConfig:{filed:string;type:"desc"|"asc"};
+    offset: string;
+    size: string;
+    searchFields: Array<{ keyword: string, value: string }>;
+    descConfig: { filed: string; type: "desc" | "asc" };
 }
 
 
-interface DBManager{
-    queryStruct(tableName:string):any[];
-    queryTables():any[]
-    selectData(tableName:string,selectConfig:SelectConfig):string;
-    saveData(tableName:string,record:Record<string, string>):any;
-    updateData(tableName:string,record:Record<string, string>,where:Record<string, any>):any;
-    deleteData(tableName:string,record:Record<string, string>):any;
-    execute(sql:string)
+interface DBManager {
+    queryStruct(tableName: string): any[];
+
+    queryTables(): any[]
+
+    selectData(tableName: string, selectConfig: SelectConfig): string;
+
+    saveData(tableName: string, record: Record<string, string>): any;
+
+    updateData(tableName: string, record: Record<string, string>, where: Record<string, any>): any;
+
+    deleteData(tableName: string, record: Record<string, string>): any;
+
+    execute(sql: string)
 }
 
-class TarsusDBUtils implements DBManager{
-    public PrimaryRepo:typeof PrimaryRepoInst;
-    
-    constructor(){
+class TarsusDBUtils implements DBManager {
+    public PrimaryRepo: typeof PrimaryRepoInst;
+
+    constructor() {
         this.PrimaryRepo = PrimaryRepoInst;
     }
+
     execute(sql: string) {
     }
 
@@ -41,7 +46,7 @@ class TarsusDBUtils implements DBManager{
 
     selectData(tableName: string, selectConfig: SelectConfig) {
         // 提供默认值
-        const { offset = '0', size = '100', searchFields, descConfig } = selectConfig;
+        const {offset = '0', size = '100', searchFields, descConfig} = selectConfig;
 
         // 构建查询语句
         let query = `SELECT * FROM ${tableName}`;
@@ -62,8 +67,8 @@ class TarsusDBUtils implements DBManager{
         // 处理分页
         query += ` LIMIT ${size} OFFSET ${offset}`;
 
-        console.log('query sql >> ',query);
-        
+        console.log('query sql >> ', query);
+
         return query;
     }
 
@@ -94,16 +99,34 @@ class TarsusDBUtils implements DBManager{
         return sql;
     }
 
-    async getAllDBRecords(){
+    async getAllDBRecords() {
         const rds = this.PrimaryRepo.getRds()
         const data = await rds.zRange(rds_key.GET_ALL_DB, 0, -1);
         return data;
     }
 
-    async setDBRecord(config:PoolOptions){
+    async setDBRecord(config: PoolOptions) {
         const rds = this.PrimaryRepo.getRds()
         const now = moment().valueOf()
-        await rds.zAdd(rds_key.GET_ALL_DB,[{score:now,value:JSON.stringify(config)}]);
+        await rds.zAdd(rds_key.GET_ALL_DB, [{score: now, value: JSON.stringify(config)}]);
+    }
+
+    async setDBQueryFileRecord(config) {
+        const rds = this.PrimaryRepo.getRds();
+        const {fileName, sql, source, database} = config;
+        const getKey = `${source}|${database}`
+        const now = moment().valueOf()
+        const data = {
+            fileName, sql
+        }
+        await rds.zAdd(getKey, [{score: now, value: JSON.stringify(database)}]);
+    }
+
+    async getDBQueryFileRecord(config) {
+        const rds = this.PrimaryRepo.getRds();
+        const {source, database} = config;
+        const getKey = `${source}|${database}` as any
+        return await rds.zRangeByScore(getKey, 0, -1);
     }
 }
 

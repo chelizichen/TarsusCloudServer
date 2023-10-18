@@ -15,21 +15,21 @@ const opts: RouteShorthandOptions = {
 };
 
 type CustomRequest = FastifyRequest<{
-    Querystring: { tableName:string };
-    Body:Record<string, any>
+    Body:{
+        sql:string;
+        fileName:string;
+        source:string;
+        database:string;
+    }
 }>;
 
 
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
-    const {tableName} = request.query;
-    const data = request.body
-    let generateSql = void '需要判断Type 0 update 1 insert'
-    generateSql = TarsusDBInst.deleteData(tableName,data)
     try{
-        const data = await centerControl.query(generateSql)
+        const data = await TarsusDBInst.getDBQueryFileRecord(request.body);
         return Reply(ReplyBody.success, ReplyBody.success_message, data);
     }catch(e){
-        return Reply(ReplyBody.error,'执行SQL失败',e)
+        return Reply(ReplyBody.error,ReplyBody.mkdir_err,null)
     }
 };
 
