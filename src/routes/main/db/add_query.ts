@@ -1,7 +1,6 @@
-import { FastifyReply, FastifyRequest, RouteShorthandOptions } from "fastify";
-import { Reply, ReplyBody, centerControl } from "../../../main_control/define";
-import load_schema from "../../../main_control/schema";
-import {  TarsusDBInst } from "../../../main_control/dbutils";
+import {FastifyReply, FastifyRequest, RouteShorthandOptions} from "fastify";
+import {centerControl, Reply, ReplyBody} from "../../../main_control/define";
+import {TarsusDBInst} from "../../../main_control/dbutils";
 
 const routes = process.env.routes_path;
 
@@ -27,11 +26,12 @@ type CustomRequest = FastifyRequest<{
 const handleFunc = async (request: CustomRequest, reply: FastifyReply) => {
     const {sql} = request.body
     try{
+        if(!request.body.fileName) return Reply(ReplyBody.error, "请输入目录",null)
         const data = await centerControl.query(sql)
         await TarsusDBInst.setDBQueryFileRecord(request.body);
         return Reply(ReplyBody.success, ReplyBody.success_message, data);
     }catch(e){
-        return Reply(ReplyBody.error,ReplyBody.mkdir_err,null)
+        return Reply(ReplyBody.error,"请求失败",null)
     }
 };
 
