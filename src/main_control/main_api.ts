@@ -1,7 +1,6 @@
 import {FastifyInstance, FastifyReply, FastifyRequest} from "fastify";
 import path from "path";
 import fs from "fs";
-import load_routes from "./serverless";
 import {Reply, ReplyBody} from "./define";
 
 
@@ -43,23 +42,3 @@ function readDir(dir, parent = '') {
     });
 }
 export default load_main;
-
-function join(...args) {
-    return args
-        .filter(arg => typeof arg === 'string' && arg.length > 0)
-        .join('/')
-        .replace(/\/+/g, '/');
-}
-
-// function generateHTML(items) {
-//     return `
-//       <ul>
-//         ${items.map(item => `
-//           <li>
-//             <div onclick="toRel('${item.path}','${item.type}')" style="cursor: pointer">${item.type === 'folder' ? '📁' : '📄'} ${item.name}</div>
-//             ${item.type === 'folder' ? generateHTML(item.children) : ''}
-//           </li>
-//         `).join('')}
-//       </ul>
-//     `;
-// }

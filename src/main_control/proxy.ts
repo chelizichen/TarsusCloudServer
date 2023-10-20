@@ -1,6 +1,6 @@
 import {FastifyReply, FastifyRequest} from "fastify";
 import http from "../static/http_request";
-import {OutTimeError} from "./error";
+import error from "./error";
 
 function load_proxy(server: any) {
     server.route({
@@ -18,7 +18,7 @@ function load_proxy(server: any) {
                 })
                 reply.send(data)
             }catch (e){
-                throw OutTimeError()
+                throw error.OutTimeError()
             }
 
         }

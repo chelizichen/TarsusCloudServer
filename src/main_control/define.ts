@@ -40,19 +40,23 @@ export const Reply = (code: ReplyBody, message: ReplyBody | string, data: any) =
     }
 }
 
+export const RETSUCCESS = (data)=>{
+    return Reply(ReplyBody.success,ReplyBody.success_message,data);
+}
+
 export enum PathType {
     work = "api",
     main = "main"
 }
 
 export type node_config = {
-    id: number,
-    port: number,
-    is_primary: boolean,
-    dir: string,
-    user_id: string,
-    pid?: string,
-    primary_id: string,
+    id          : number,
+    port        : number,
+    is_primary  : boolean,
+    dir         : string,
+    user_id     : string,
+    pid?        : string,
+    primary_id  : string,
 }
 
 export enum rds_key {
