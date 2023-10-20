@@ -26,19 +26,6 @@ function LoadTaro() {
 
 async function startServer() {
 
-    // UP Private
-    if(Number(process.env.IsOnlyDB) == 1){
-        const up_node_config = {
-            is_primary: true,
-            port: 3401,
-            dir: '',
-        } as node_config
-        LoadTaro()
-        process.env.fastify_config = JSON.stringify(up_node_config)
-        reset_node(up_node_config)
-        return
-    }
-
     const primary_node:node_config = await centerControl.getPrimary();
     const worker_nodes:node_config[] = await centerControl.getWorkers();
     if(cluster.isPrimary){
@@ -55,15 +42,7 @@ async function startServer() {
         process.env.fastify_config = JSON.stringify(primary_node)
 
         try {
-            // 单独启动主控端口后再启动其他端口
             await reset_node(primary_node);
-
-            // for (let i = 0; i < worker_nodes.length; i++) {
-            //     const fork_env:string = JSON.stringify(worker_nodes[i])
-            //     cluster.fork({
-            //         fastify_config:fork_env
-            //     });
-            // }
         } catch (e) {
             console.error("Error in primary node:", e);
         }

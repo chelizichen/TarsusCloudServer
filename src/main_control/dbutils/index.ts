@@ -46,7 +46,7 @@ class TarsusDBUtils implements DBManager {
 
     selectData(tableName: string, selectConfig: SelectConfig) {
         // 提供默认值
-        const {offset = '0', size = '100', searchFields, descConfig} = selectConfig;
+        const {offset = '0', size = '1000', searchFields, descConfig} = selectConfig;
 
         // 构建查询语句
         let query = `SELECT * FROM ${tableName}`;
