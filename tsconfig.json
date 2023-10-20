@@ -3,10 +3,12 @@
         "outDir": "dist",
         "strictPropertyInitialization": false,
         "esModuleInterop":true,
+        "moduleResolution": "NodeNext",
         "downlevelIteration":true,
-        "target": "es5",
+        "target": "ES2015",
         "lib": ["es2022", "ESNext"],
         "strict": false,
-        "sourceMap": true
+        "sourceMap": true,
+        "module": "NodeNext"
     }
 }

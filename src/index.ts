@@ -19,8 +19,8 @@ function LoadTaro() {
         });
         const structMaps    = stream_proxy.TarsusStream.struct_map
         const schemaMaps    = generateSchemaFromMap(structMaps)
-        const systemTaroJsFilePath = path.resolve(__dirname,'./taro','System.json')
-        writeFileSync(systemTaroJsFilePath,JSON.stringify(schemaMaps),'utf-8')
+        // const systemTaroJsFilePath = path.resolve(__dirname,'./taro','System.json')
+        // writeFileSync(systemTaroJsFilePath,JSON.stringify(schemaMaps),'utf-8')
         load_schema.dtoMaps = schemaMaps;
 }
 
@@ -72,10 +72,10 @@ async function startServer() {
         await centerControl.setPid(String(worker_env.port),process.pid)
         process.env.user_path =  worker_env.dir
         console.log( process.env.user_path)
-        const taro_path = path.resolve(routes_path,'taro',process.env.user_path)
+        const taro_path = path.resolve(routes_path,'taro',process.env.user_path) + '.js'
         console.log('load taro_ts_path',taro_path,' success');
-        await import(taro_path)
         try {
+            await import(taro_path)
             await reset_node(worker_env);
         } catch (e) {
             console.error("Error in worker node:", e);

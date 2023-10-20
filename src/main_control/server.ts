@@ -11,10 +11,13 @@ import load_proxy from "./proxy";
 async function loadAll(server){
     server.register(fastifyMultipart);
     const config:node_config = JSON.parse(process.env.fastify_config)
+    console.log('server config - ', config);
+    
     load_static(server);
     load_main(server);
 
     if(Number(config.is_primary)){
+        console.log('primary');
         await load_proxy(server)
         const main_path = path.resolve(process.env.routes_path,PathType.main)
         await load_routes(server,main_path,"/main")

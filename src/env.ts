@@ -2,6 +2,8 @@ import { PoolOptions } from "mysql2";
 import path from "path";
 import dotenv from 'dotenv';
 
+console.log('NODE_ENV',process.env.NODE_ENV);
+
 // 通过加载不同的.env文件来设置不同的环境变量
 if (process.env.NODE_ENV === 'production') {
     dotenv.config({ path: '.env.production' }); // 加载生产环境的.env文件

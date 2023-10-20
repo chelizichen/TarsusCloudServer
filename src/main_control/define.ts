@@ -104,7 +104,6 @@ class CenterControl {
         let conn = PrimaryRepoInst.getDB().promise()
         const data = await conn.query(setPidSql)
         console.log(data)
-
     }
 
     public async getPrimary() {

@@ -3,18 +3,13 @@ import path from "path";
 import {FastifyInstance, RouteShorthandOptions} from "fastify";
 import {node_config} from "./define";
 
-// 环境定义
-console.log('process.env.IsProd',process.env.IsProd)
 
-let suffix = ""
-if(process.env.IsProd == "1"){
-    suffix = ".js"
-}else {
-    suffix = ".ts"
-}
+let suffix = process.env.suffix
+console.log('suffix',suffix);
 
 
 async function load_routes(server:FastifyInstance,dir, prefix = '') {
+    console.log('load_routes',dir,prefix);
     const files = fs.readdirSync(dir);
     for (const file of files) {
         const filePath = path.join(dir, file);
@@ -24,12 +19,11 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
         } else if (stat.isFile() && (filePath.endsWith(suffix)) ) {
             try{
                 const config:node_config = JSON.parse(process.env.fastify_config)
-
                 const isPrimary = config.is_primary
                 if(Number(isPrimary)){
                     const file_path = path.resolve(dir,file)
                     const route = await import(file_path);
-                    const [opts, handler]:any[]=  await route.default();
+                    const [opts, handler]:any[]=  await route.default.default();
                     const routePath = `${prefix}/${path.basename(file, suffix)}`;
                     console.log(routePath + ' is load success')
                     server.route({
@@ -43,7 +37,8 @@ async function load_routes(server:FastifyInstance,dir, prefix = '') {
                     console.log('file_path',file_path)
                     const route = import(file_path);
                     route.then(res=>{
-                        const [opts, handler]:any[]= res.default;
+                        console.log('res',res);
+                        const [opts, handler]:any[]= res.default.default;
                         const routePath = `${prefix}/${path.basename(file, suffix)}`;
                         console.log(routePath + ' is load success')
                         server.route({
