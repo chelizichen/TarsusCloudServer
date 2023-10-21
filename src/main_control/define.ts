@@ -259,6 +259,15 @@ class CenterControl {
         return ret;
     }
 
+    public async queryCount(tableName:string) {
+        let conn = PrimaryRepoInst.getDB().promise()
+        let sql = `
+            select count(*) as total from ${tableName}
+        `
+        const [ret] = await conn.query(sql)
+        return ret[0];
+    }
+
     public resetDb(newDatabase: string | PoolOptions) {
         PrimaryRepoInst.getDB().end(); // 关闭旧的连接池
         let newconfig: PoolOptions;
